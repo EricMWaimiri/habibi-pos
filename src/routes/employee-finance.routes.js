@@ -1,0 +1,32 @@
+'use strict';
+const router=require('express').Router(),db=require('../config/prisma'),S=require('../utils/employee-finance-service'),R=require('../utils/employee-finance-read'),L=require('../utils/accounting-ledger');
+const {authenticate,requireActiveUser}=require('../middlewares/auth.middleware'),{loadPermissions}=require('../middlewares/permission.middleware');
+router.use(authenticate,requireActiveUser,loadPermissions);
+router.use((req,res,next)=>{res.set('Cache-Control','no-store');next();});
+router.post('/bill-preview',async(req,res)=>res.json(await S.previewBills(db,await S.readContext(db,req.auth),req.body)));
+const get=(path,work)=>router.get(path,async(req,res)=>res.json(await work(req,await S.readContext(db,req.auth))));
+router.get('/employees',async(req,res)=>res.json(await db.$transaction(async tx=>R.employeeOverview(tx,await S.readContext(tx,req.auth),req.query),{isolationLevel:'RepeatableRead',timeout:30000})));
+get('/options',(req,ctx)=>R.options(db,ctx));
+get('/bills',(req,ctx)=>S.bills(db,ctx,req.query,req.query.allMatching==='1'));
+get('/receipts',(req,ctx)=>R.receipts(db,ctx,req.query));
+get('/receipts/:id',(req,ctx)=>R.receipt(db,ctx,req.params.id));
+get('/advances',(req,ctx)=>R.advances(db,ctx,req.query));
+get('/payroll',(req,ctx)=>R.payrolls(db,ctx,req.query));
+router.get('/payroll/:id/print',async(req,res)=>{const data=await R.payrollDetail(db,await S.readContext(db,req.auth),req.params.id),c=data.snapshot.calculation,i=data.snapshot.input;res.type('html').send(require('../utils/accounting-read').printable({kind:'PAYSLIP — '+data.employee.name,period:{year:data.payroll_year,month:data.payroll_month,status:data.status},rows:[{employee:data.employee.name,monthlyBasic:c.monthlyBasic,calendarDays:c.calendarDays,missedDays:c.missedDays,payableDays:c.payableDays,adjustedBasic:c.basic,commission:i.commission,tips:i.tips,additional:i.additional,selectedBillDeductions:i.bills,selectedAdvanceRecovery:i.advance,otherDeductions:i.deductions,netBeforeStatutory:c.net,payrollLiability:data.payrollLiability,...(data.current?{currentExpense:data.current.expense,currentTips:data.current.tips,confirmedBills:data.current.bills,confirmedAdvances:data.current.advances,confirmedOtherDeductions:data.current.otherDeductions,actualPayouts:data.current.actualPaid,recoverableOverpayment:data.current.overpaymentOutstanding}:{})}],basis:data.basis+' Drafts are not payment receipts; statutory adjustments require separate review.'}));});
+get('/payroll/:id',(req,ctx)=>R.payrollDetail(db,ctx,req.params.id));
+get('/payroll-inputs/:employeeId',(req,ctx)=>R.payrollInputs(db,ctx,req.params.employeeId,req.query));
+get('/reconciliation',(req,ctx)=>R.reconciliation(db,ctx,req.query));
+get('/operations/:id',(req,ctx)=>R.operation(db,ctx,req.params.id,req.auth));
+router.post('/operations/:id/abandon',async(req,res)=>res.json(await S.abandon(db,req.auth,req.params.id)));
+// All correction routes retain the router's authenticated, active-user and
+// CSRF/origin middleware. The service independently revalidates transaction grants.
+const corrections=require('../utils/payroll-corrections');
+router.post('/payroll-corrections/preview',async(req,res)=>res.json(await corrections.preview(db,req.auth,req.body)));
+router.post('/payroll-corrections',async(req,res)=>{const r=await corrections.create(db,req.auth,req.body);res.status(r.replayed?200:201).json(r);});
+router.post('/payroll-corrections/decision',async(req,res)=>res.json(await corrections.decide(db,req.auth,req.body)));
+router.post('/payroll-corrections/apply',async(req,res)=>res.json(await corrections.apply(db,req.auth,req.body)));
+get('/payroll/:id/correction-context',(req)=>corrections.context(db,req.auth,req.params.id));
+get('/payroll/:id/corrections',(req)=>corrections.history(db,req.auth,req.params.id));
+router.post('/actions',async(req,res)=>{const result=await S.mutate(db,req.auth,req.body);res.status(result.replayed?200:201).json(result);});
+router.get('/exports/:kind',async(req,res)=>{const ctx=await S.readContext(db,req.auth);S.requirePermission(ctx,'employee_finance.export');if(!['reconciliation','payroll'].includes(req.params.kind))throw L.error(404,'Export not found.');const data=await db.$transaction(async tx=>{const fresh=await S.readContext(tx,req.auth);S.requirePermission(fresh,'employee_finance.export');const read=req.params.kind==='payroll'?R.payrolls:R.reconciliation,first=await read(tx,fresh,{...req.query,page:'1',pageSize:'200'});if(first.pagination.total>5000)throw L.error(400,'Narrow the export to5000 records or fewer.');const rows=[...first.rows];for(let page=2;page<=first.pagination.pages;page++)rows.push(...(await read(tx,fresh,{...req.query,page:String(page),pageSize:'200'},false)).rows);return{...first,rows};},{isolationLevel:'RepeatableRead',timeout:30000});const payroll=req.params.kind==='payroll',rows=payroll?data.rows.map(r=>({employee:r.employee_name,year:r.payroll_year,month:r.payroll_month,status:r.status,monthlyBasic:String(r.monthly_basic),calendarDays:r.calendar_days,missedDays:String(r.missed_days),payableDays:String(r.payable_days),adjustedBasic:String(r.adjusted_basic),commission:r.snapshot.input.commission,tips:r.snapshot.input.tips,selectedBillDeductions:r.snapshot.input.bills,confirmedBillDeductions:r.current_bills,selectedAdvanceRecovery:r.snapshot.input.advance,confirmedAdvanceRecovery:r.current_advances,otherDeductions:r.snapshot.input.deductions,additional:r.snapshot.input.additional,originalNetBeforeStatutory:String(r.net_before_statutory),currentNetBeforeStatutory:r.current_net||String(r.net_before_statutory)})):data.rows,keys=[...new Set(rows.flatMap(Object.keys))];res.set('Content-Disposition','attachment; filename="habibi-'+req.params.kind+'.csv"').type('text/csv').send(L.csv(rows,keys.map(k=>({label:k,value:r=>r[k]})),'Habibi employee finance — '+req.params.kind,'All records matching the applied filters; consistent read-only export snapshot.'));});
+module.exports=router;

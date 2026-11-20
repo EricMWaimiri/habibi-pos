@@ -1,0 +1,21 @@
+[
+  "tests/installation-bundle.test.cjs",
+  "tests/runtime-database.test.js",
+  "tests/printer-config.test.js",
+  "tests/print.test.js",
+  "tests/receipt-print.test.js",
+  "tests/pricing.test.js",
+  "tests/pricing-controller.test.js",
+  "tests/employee-payroll-segments.test.js",
+  "tests/payroll-correction-preview.test.js",
+  "tests/payslip-document.test.js",
+  "tests/mpesa-matching.test.js",
+  "tests/employee-finance-allocation.test.js",
+  "tests/employee-finance-invariants.test.js",
+  "tests/business-day-context.test.js",
+  "tests/business-period.test.js",
+  "tests/branding.test.js",
+  "tests/session-auth.test.js",
+  "tests/web-session.test.js",
+  "tests/socket-security.test.js"
+]

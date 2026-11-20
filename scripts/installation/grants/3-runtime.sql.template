@@ -1,0 +1,16 @@
+ALTER DEFAULT PRIVILEGES FOR ROLE "{{MIGRATION_ROLE}}" REVOKE EXECUTE ON FUNCTIONS FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public."accounting_append_only"() FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public."accounting_approval_transition"() FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public."accounting_document_transition"() FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public."employee_finance_allocation_guard"() FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public."employee_finance_reference_guard"() FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public."format_order_number"(suffix bigint, issued_at timestamp with time zone) FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public."next_order_number"() FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public."phase5_append_only"() FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public."phase5_cash_reconciles"() FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public."phase5_request_decision"() FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public."phase5_validate_portion"() FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public."prevent_administration_event_mutation"() FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public."protect_stock_origin"() FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public."reject_accounting_event_mutation"() FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.next_order_number(),public.format_order_number(bigint,timestamptz) TO "{{RUNTIME_ROLE}}";

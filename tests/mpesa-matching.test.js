@@ -1,0 +1,6 @@
+'use strict';
+const test=require('node:test'),a=require('node:assert/strict'),M=require('../src/utils/mpesa-matching');
+test('suffix syntax is bounded and cannot become SQL syntax',()=>{a.equal(M.suffix(' ab3 '),'AB3');for(const v of['AB','ABC%','ABC OR 1=1',null,'A'.repeat(11)])a.throws(()=>M.suffix(v),e=>e.status===400);});
+test('unprivileged matching denied before database access',async()=>a.rejects(M.matches({}, {id:'x'},[], 'ABC'),e=>e.status===403));
+test('limited M-Pesa matching enforces original bill/collector scope and parameterizes input',async()=>{let sql,args;const result=await M.matches({$queryRawUnsafe:async(s,...v)=>{sql=s;args=v;return[{reference:'FULLREFABC'},{reference:'ANOTHERABC'}];}},{id:'actor'},['pay.mpesa'],'ABC');a(sql.includes('s."waiterId"=$2'));a(!sql.includes('UNION ALL'));a.deepEqual(args,['ABC','actor']);a.equal(result.ambiguous,true);a.equal(result.providerVerified,false);a.equal(result.matchingOnly,true);});
+test('receipt lookup requires existing receipt visibility and never modifies a table',async()=>{let sql;const r=await M.matches({$queryRawUnsafe:async s=>{sql=s;return Array.from({length:51},()=>({reference:'ABC'}));}},{id:'owner'},['payments.view_collected','receivables.view'],'ABC');a(sql.includes('UNION ALL'));a(!/INSERT|UPDATE|DELETE/.test(sql));a.equal(r.matches.length,50);a.equal(r.more,true);});

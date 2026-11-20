@@ -1,0 +1,77 @@
+{
+  "status": "PROPOSED_OWNER_VISUAL_ACCEPTANCE_PENDING",
+  "source": "Exact owner-original.png retained unchanged; transparent derivative is proposed pending owner visual review.",
+  "sourceWidth": 1254,
+  "sourceHeight": 1254,
+  "compact": "Cocktail and platter symbol crop",
+  "monochrome": "Binary-alpha black-ink print rendering; thermal128x128/2048 bytes",
+  "inventory": [
+    {
+      "path": "app-icon-180.png",
+      "bytes": 34401,
+      "sha256": "1dfacebe19eb500c600d5e4bd1a4b1cbeb9d5d7a7ffa2cfe058948b425f836df"
+    },
+    {
+      "path": "app-icon-192.png",
+      "bytes": 37969,
+      "sha256": "837eb6206db239192b61e2bd57fc0d687fd95335d98f89da3c7c2394f9bf3339"
+    },
+    {
+      "path": "app-icon-512.png",
+      "bytes": 210006,
+      "sha256": "b9f91635e9bd5b1bed2247bf6b0ad7e2bb732d91c949ffd9818009a47f7be44e"
+    },
+    {
+      "path": "favicon-32.png",
+      "bytes": 1927,
+      "sha256": "9698205466735b1555b72964d3af93e2e4bcd0f2bef80edceb696f25bf74b1e1"
+    },
+    {
+      "path": "habibi-compact.webp",
+      "bytes": 8868,
+      "sha256": "dc22686189041a4d79e764cee942c7edaa3974d871dbab9530f8547b6ab9527b"
+    },
+    {
+      "path": "habibi-full.webp",
+      "bytes": 47122,
+      "sha256": "a7b4d879c60843cc398c64f4f4be5c22ea9e3ded497ada4316859d838e60e093"
+    },
+    {
+      "path": "habibi-print.png",
+      "bytes": 7872,
+      "sha256": "75314db74603803d8e1123061608fd9b6c98eedf641317b3143171ee0c5895c0"
+    },
+    {
+      "path": "habibi-thermal.png",
+      "bytes": 2196,
+      "sha256": "dd89701e1810eaa933dad906f6bf9a282f48205a10e0ecc24c0c554b9a217c36"
+    },
+    {
+      "path": "habibi-transparent.png",
+      "bytes": 232426,
+      "sha256": "d8c926925c7b6dfe90aa54649578096d9f3f64d96141bb4ae7f808d778674416"
+    },
+    {
+      "path": "owner-original.png",
+      "bytes": 1283313,
+      "sha256": "28340d159ab7c557b504b6ed15f3bcc9ee4aabfc1a9c6c01972155ec8d71d189"
+    },
+    {
+      "path": "proposed-transparent-source.png",
+      "bytes": 1005742,
+      "sha256": "d46d875ccefada9fbcf9316ba65178af30a408de6ddcda393f1017ecbca77ec8"
+    },
+    {
+      "path": "receipt-preview.html",
+      "bytes": 12009,
+      "sha256": "93e75b73695f740cb8ece10f6771f8b7020a1786258b3066a796ef5228d797ee"
+    },
+    {
+      "path": "thermal-raster.json",
+      "bytes": 2784,
+      "sha256": "f541c85be5fca8c31dcd1647623cde69b370b464ea026f8aa6b60cec6421c38d"
+    }
+  ],
+  "ownerOriginalSha256": "28340d159ab7c557b504b6ed15f3bcc9ee4aabfc1a9c6c01972155ec8d71d189",
+  "full": "Optimized directly from unchanged owner original, not the generated derivative."
+}

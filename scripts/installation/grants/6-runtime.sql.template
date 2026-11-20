@@ -1,0 +1,17 @@
+-- REVIEW ONLY. TEST only; no existing role attributes or object privileges changed.
+BEGIN;
+DO $guard$ BEGIN
+ IF current_database() IS DISTINCT FROM '{{DATABASE}}'
+ OR (SELECT oid::integer FROM pg_database WHERE datname=current_database()) IS DISTINCT FROM {{OID}}
+ OR current_user IS DISTINCT FROM '{{MIGRATION_ROLE}}'
+ OR host(inet_server_addr()) IS DISTINCT FROM '127.0.0.1' OR inet_server_port() IS DISTINCT FROM {{PORT}}
+ OR (SELECT system_identifier::text FROM pg_control_system()) IS DISTINCT FROM '{{CLUSTER}}'
+ THEN RAISE EXCEPTION 'Unapproved receiving/business-day grant target'; END IF;
+END $guard$;
+GRANT SELECT, INSERT(purchase_id) ON TABLE public.supplier_invoice_receiving TO {{RUNTIME_ROLE}};
+GRANT SELECT, INSERT(id,purchase_id,request_hash,reverses_id,actor_id,shift_id,posting_date,reason) ON TABLE public.supplier_goods_receipts TO {{RUNTIME_ROLE}};
+GRANT SELECT, INSERT(id,receipt_id,purchase_item_id,quantity,amount,movement_id) ON TABLE public.supplier_goods_receipt_lines TO {{RUNTIME_ROLE}};
+GRANT SELECT, INSERT(id,version,start_minute,effective_date,previous_id,actor_id,reason) ON TABLE public.business_day_policies TO {{RUNTIME_ROLE}};
+GRANT SELECT, INSERT(id,policy_id,business_date,starts_at,ends_at) ON TABLE public.business_day_periods TO {{RUNTIME_ROLE}};
+-- UUIDs supplied by application. No sequences, UPDATE, DELETE, TRUNCATE, CREATE, ownership, journal changes or DEV grants.
+COMMIT;

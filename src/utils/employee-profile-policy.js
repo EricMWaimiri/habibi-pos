@@ -1,0 +1,9 @@
+'use strict';
+const {z}=require('zod'),{isRealDate}=require('./accounting'),{calculateDraft}=require('./employee-payroll-draft');
+const fail=(status,message)=>Object.assign(Error(message),{status});
+const date=z.string().refine(isRealDate),amount=z.string().regex(/^(0|[1-9]\d{0,9})(\.\d{1,2})?$/);
+const schema=z.strictObject({employeeId:z.string().min(1).max(100),expectedRevision:z.number().int().min(0),effectiveDate:date,employmentStart:date,employmentEnd:date.nullable(),employmentStatus:z.enum(['ACTIVE','ON_LEAVE','ENDED']),monthlyBasic:amount,commissionEligible:z.boolean(),commissionRate:z.string().regex(/^(0|[1-9]\d?)(\.\d{1,2})?$|^100(\.0{1,2})?$/),reason:z.string().trim().min(3).max(200)});
+function validate(input){const r=schema.safeParse(input);if(!r.success)throw fail(400,'Invalid employment profile revision.');const p=r.data;if(p.employmentEnd&&p.employmentEnd<p.employmentStart||p.effectiveDate<p.employmentStart||p.employmentStatus==='ENDED'&&!p.employmentEnd)throw fail(400,'Review employment and salary effective dates.');if(!p.commissionEligible&&Number(p.commissionRate)!==0)throw fail(400,'Ineligible employees must have a zero commission rate.');return p;}
+function selectProfile(revisions,employeeId,asOf){if(!isRealDate(asOf))throw fail(400,'Choose a valid payroll profile date.');const rows=revisions.filter(p=>p.employeeId===employeeId&&p.effectiveDate<=asOf).sort((a,b)=>b.effectiveDate.localeCompare(a.effectiveDate)||b.revision-a.revision);return rows[0]||null;}
+function draftFromProfile(profile,input){if(!profile)throw fail(409,'An approved salary profile is required.');return require('./employee-payroll-segments').segmentedDraft([{...profile,revision:profile.revision||1}],profile.employeeId,input);}
+module.exports={validate,selectProfile,draftFromProfile};

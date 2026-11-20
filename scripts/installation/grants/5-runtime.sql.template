@@ -1,0 +1,28 @@
+-- REVIEW ONLY. Do not execute before exact owner approval and TEST-first acceptance.
+BEGIN;
+DO $guard$ BEGIN
+ IF current_database() IS DISTINCT FROM '{{DATABASE}}'
+ OR (SELECT oid::integer FROM pg_database WHERE datname=current_database()) IS DISTINCT FROM {{OID}}
+ OR current_user IS DISTINCT FROM '{{MIGRATION_ROLE}}'
+ OR host(inet_server_addr()) IS DISTINCT FROM '127.0.0.1' OR inet_server_port() IS DISTINCT FROM {{PORT}}
+ OR (SELECT system_identifier::text FROM pg_control_system()) IS DISTINCT FROM '{{CLUSTER}}'
+ THEN RAISE EXCEPTION 'Unapproved payroll grant target'; END IF;
+END $guard$;
+GRANT SELECT, INSERT(id,request_id,original_draft_id,replacement_draft_id,kind,actor_id,reason,created_at) ON TABLE public.payroll_draft_revisions TO {{RUNTIME_ROLE}};
+GRANT SELECT, INSERT(id,request_id,root_draft_id,basis_draft_id,replacement_draft_id,expected_version,mode,actor_id,accounting_date,preview_fingerprint,snapshot,reason,created_at) ON TABLE public.payroll_corrections TO {{RUNTIME_ROLE}};
+GRANT SELECT, INSERT(id,request_id,correction_id,sequence,status,actor_id,reason,preview_fingerprint,created_at) ON TABLE public.payroll_correction_events TO {{RUNTIME_ROLE}};
+GRANT SELECT, INSERT(correction_id,root_draft_id,effective_draft_id,version,actor_id,created_at) ON TABLE public.payroll_correction_applications TO {{RUNTIME_ROLE}};
+GRANT SELECT, INSERT(id,source_id,correction_id,amount,created_at) ON TABLE public.payroll_source_releases TO {{RUNTIME_ROLE}};
+GRANT SELECT, INSERT(id,recovery_id,correction_id,accounting_adjustment_id,amount,created_at) ON TABLE public.payroll_advance_reversals TO {{RUNTIME_ROLE}};
+GRANT SELECT, INSERT(id,correction_id,root_draft_id,employee_id,accounting_adjustment_id,amount,created_at) ON TABLE public.payroll_overpayment_claims TO {{RUNTIME_ROLE}};
+GRANT SELECT, INSERT(id,request_id,claim_id,accounting_adjustment_id,amount,method,recovery_draft_id,actor_id,approved_by_id,authorization_reference,reason,created_at) ON TABLE public.payroll_overpayment_recoveries TO {{RUNTIME_ROLE}};
+GRANT SELECT, INSERT(period_start,request_id,actor_id,approved_by_id,reason,created_at) ON TABLE public.accounting_closed_periods TO {{RUNTIME_ROLE}};
+GRANT EXECUTE ON FUNCTION public.core_payroll_segments_valid(jsonb,integer,integer,integer,numeric,numeric,numeric,numeric,numeric,jsonb) TO {{RUNTIME_ROLE}};
+GRANT EXECUTE ON FUNCTION public.payroll_root(uuid) TO {{RUNTIME_ROLE}};
+GRANT EXECUTE ON FUNCTION public.payroll_lock(uuid) TO {{RUNTIME_ROLE}};
+GRANT EXECUTE ON FUNCTION public.payroll_open_date(date) TO {{RUNTIME_ROLE}};
+GRANT EXECUTE ON FUNCTION public.payroll_source_capacity(text,text) TO {{RUNTIME_ROLE}};
+-- Existing reviewed table-level INSERT already covers new optional columns.
+-- Verify this fact before approval; no blanket new existing-table rights are granted.
+GRANT SELECT, INSERT(id,claim_id,correction_id,accounting_adjustment_id,amount,created_at) ON TABLE public.payroll_overpayment_claim_adjustments TO {{RUNTIME_ROLE}};
+COMMIT;

@@ -1,0 +1,7 @@
+'use strict';
+const{test}=require('node:test'),a=require('assert/strict'),{load}=require('../src/utils/printer-config');
+test('missing private printer configuration always produces safe dry-run defaults',()=>{const c=load({},{exists:()=>false});a.equal(c.DRY_RUN,true);a.equal(c.PORT,9100);a.equal(c.COUNTER.ip,undefined);});
+test('existing approved legacy printer configuration is preserved without copying it',()=>{const c={DRY_RUN:true,PORT:9100,COUNTER:{name:'fixture'}};a.equal(load({},{exists:()=>true,legacyRequire:()=>c}),c);});
+test('external printer JSON is explicit, validated and never silently falls back on errors',()=>{a.equal(load({POS_PRINTER_CONFIG:__filename},{read:()=>JSON.stringify({DRY_RUN:true,PORT:9100})}).DRY_RUN,true);for(const text of ['bad','{}','{"DRY_RUN":false,"PORT":0}'])a.throws(()=>load({POS_PRINTER_CONFIG:__filename},{read:()=>text}));a.throws(()=>load({POS_PRINTER_CONFIG:'relative.json'}));});
+
+test('Settings uses the portable printer loader instead of a private source dependency',()=>{const fs=require('fs'),path=require('path');for(const name of ['src/utils/settings.js','src/controllers/settings.controller.js']){const source=fs.readFileSync(path.join(__dirname,'..',name),'utf8');a(!source.includes("require('../../config/printers')"));a(source.includes('printer-config'));}const settings=require('../src/utils/settings');a.doesNotThrow(()=>settings.fallback());});

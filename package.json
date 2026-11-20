@@ -1,0 +1,49 @@
+{
+  "name": "habibi-pos",
+  "version": "1.0.0",
+  "description": "Habibi Lounge POS - Express, PostgreSQL, Prisma and Socket.IO",
+  "main": "src/server.js",
+  "scripts": {
+    "test": "node scripts/installation/test-release.cjs",
+    "test:unit": "node scripts/installation/test-release.cjs",
+    "test:integration": "node tests/installation-approval-concurrency.cjs",
+    "test:setup": "node scripts/installation/prepare-installation.cjs",
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "node scripts/installation/deploy-prepared.cjs",
+    "prisma:studio": "prisma studio",
+    "release:verify": "node scripts/installation/verify-release.cjs"
+  },
+  "keywords": [
+    "pos",
+    "bar",
+    "express",
+    "prisma"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@prisma/client": "^6.19.3",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.8",
+    "express": "^4.22.3",
+    "express-async-errors": "^3.1.1",
+    "express-rate-limit": "^8.7.1",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.12.1",
+    "socket.io": "^4.8.4",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14",
+    "prisma": "^6.19.3"
+  },
+  "allowScripts": {
+    "@prisma/client@6.19.3": true,
+    "@prisma/engines@6.19.3": true,
+    "prisma@6.19.3": true
+  }
+}

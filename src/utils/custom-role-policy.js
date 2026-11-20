@@ -1,0 +1,18 @@
+'use strict';
+// Custom roles refine an existing authority tier. The resolver is not enabled
+// globally until every authorization path has completed integrated acceptance.
+const {PERMISSIONS,MANDATORY_MANAGER_PERMISSIONS,ROLE_VALUES}=require('./permission-definitions');
+const known=new Set(PERMISSIONS.map(p=>p.key)),fail=(status,message)=>Object.assign(Error(message),{status});
+function effectiveCustomPermissions(baseRole,basePermissions,custom){if(!ROLE_VALUES.includes(baseRole)||!Array.isArray(basePermissions)||basePermissions.some(k=>!known.has(k)))throw fail(409,'Cannot verify base role grants.');if(!custom)return[...new Set(basePermissions)].sort();if(custom.baseRole!==baseRole||custom.isActive!==true||!Array.isArray(custom.permissions)||custom.permissions.some(k=>!known.has(k)))throw fail(403,'Custom role assignment is unavailable or inconsistent.');const requested=new Set(custom.permissions),base=new Set(basePermissions),grants=[...requested].filter(k=>base.has(k));if(baseRole==='MANAGER'){for(const k of MANDATORY_MANAGER_PERMISSIONS)if(!grants.includes(k))grants.push(k);}if(baseRole!=='MANAGER'){const index=grants.indexOf('permissions.manage');if(index>=0)grants.splice(index,1);}return[...new Set(grants)].sort();}
+function authorizeCustomRoleChange(ctx,body){if(ctx?.actor?.role!=='MANAGER'||!ctx.permissions?.includes('permissions.manage'))throw fail(403,'Only an authorized manager may configure custom roles.');if(!body||typeof body.name!=='string'||body.name.trim().length<2||body.name.length>80||!ROLE_VALUES.includes(body.baseRole)||!Array.isArray(body.permissions)||new Set(body.permissions).size!==body.permissions.length||body.permissions.some(k=>!known.has(k)))throw fail(400,'Invalid custom role definition.');if(body.baseRole!=='MANAGER'&&body.permissions.includes('permissions.manage'))throw fail(403,'Permission administration requires the manager authority tier.');if(body.permissions.some(k=>!ctx.permissions.includes(k)))throw fail(403,'Cannot delegate permissions outside the actor?s own effective grants.');return true;}
+function permissionGroup(key){if(/^(sales\.|receipt\.|pos\.)/.test(key))return'Sales';if(/^(pay\.|payments\.)/.test(key))return'Payments';if(/^(receivables\.)/.test(key))return'Outstanding bills';if(/^(stock\.|products\.)/.test(key))return'Inventory';if(/^purchases\./.test(key))return'Purchases';if(/^(expenses\.|expense_categories\.)/.test(key))return'Expenses';if(/^(employee_|tips\.)/.test(key))return'Employees';if(/^payroll\./.test(key))return'Payroll';if(/^(reports\.|dashboard\.|commissions\.)/.test(key))return'Reports';return'Administration';}
+async function resolveUserPermissions(db,actor){
+ if(!actor||!ROLE_VALUES.includes(actor.role)||actor.isActive===false)throw fail(403,'Active user authority required.');
+ const rows=await db.rolePermission.findMany({where:{role:actor.role,enabled:true},select:{permission:true}});
+ const base=require('./admin-policy').effectivePermissions(actor.role,rows.map(r=>r.permission));
+ const assignment=await db.userCustomRole.findUnique({where:{userId:actor.id},include:{role:{include:{permissions:{where:{enabled:true},select:{permission:true}}}}}});
+ if(!assignment?.roleId)return effectiveCustomPermissions(actor.role,base,null);
+ if(!assignment.role)throw fail(403,'Assigned custom role is unavailable.');
+ return effectiveCustomPermissions(actor.role,base,{baseRole:assignment.role.baseRole,isActive:assignment.role.isActive,permissions:assignment.role.permissions.map(r=>r.permission)});
+}
+module.exports={effectiveCustomPermissions,authorizeCustomRoleChange,permissionGroup,resolveUserPermissions};

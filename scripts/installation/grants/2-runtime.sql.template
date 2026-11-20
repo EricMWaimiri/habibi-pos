@@ -1,0 +1,9 @@
+GRANT SELECT, INSERT ON public."employee_finance_operations" TO "{{RUNTIME_ROLE}}";
+GRANT SELECT, INSERT ON public."employee_payroll_events" TO "{{RUNTIME_ROLE}}";
+GRANT SELECT, INSERT ON public."employee_payroll_periods" TO "{{RUNTIME_ROLE}}";
+GRANT SELECT, INSERT ON public."employee_payroll_sources" TO "{{RUNTIME_ROLE}}";
+GRANT SELECT, INSERT ON public."employee_salary_advances" TO "{{RUNTIME_ROLE}}";
+GRANT SELECT, INSERT ON public."employee_advance_recoveries" TO "{{RUNTIME_ROLE}}";
+GRANT SELECT, INSERT ON public."employee_finance_cash" TO "{{RUNTIME_ROLE}}";
+GRANT SELECT, INSERT ON public."employee_payroll_postings" TO "{{RUNTIME_ROLE}}";
+GRANT SELECT, INSERT ON public."employee_settlement_links" TO "{{RUNTIME_ROLE}}";

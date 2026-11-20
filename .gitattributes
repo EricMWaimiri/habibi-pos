@@ -1,0 +1,3 @@
+# Preserve reviewed release bytes across staging and Windows checkouts.
+* -text
+/prisma/migrations/** -text

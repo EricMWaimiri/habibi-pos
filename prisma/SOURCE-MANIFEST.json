@@ -1,0 +1,129 @@
+{
+  "migrations": [
+    {
+      "name": "20261017200107_init",
+      "sha256": "58e5501772a8d13603cf85473d460fa9e1f098634752b1ec3cec3df33a057f2c"
+    },
+    {
+      "name": "20261017210716_quantities_to_decimal",
+      "sha256": "85abd307b4d08d5cd5a7e55d2c2581e0472e54465755fc2ce76affbf52f96c92"
+    },
+    {
+      "name": "20261017221457_quantities_precision_6",
+      "sha256": "21d53e6533a313e442aa03d16f41d94e7422c6a9fbc0bbf65003fc71d4f24a91"
+    },
+    {
+      "name": "20261017230658_user_pin_login",
+      "sha256": "60e017173ffb9967bb23342a379d63ccf6f4b65ddf9a16a40520d08b968dce4b"
+    },
+    {
+      "name": "20261019154741_remove_table_add_merge",
+      "sha256": "693373da24454e7369334ff59e0ce05f9fa194dd5d50d335f589089e96047b5c"
+    },
+    {
+      "name": "20261021153530_role_permissions",
+      "sha256": "be1e5297cac8cbda8f972c19bd0c77a02489bef6ce6c708906a2911f480d1cd9"
+    },
+    {
+      "name": "20261021212356_expenses",
+      "sha256": "77ff25d42f3f8b5bfb91b9314284230881e0e58a1ab8b7508e46d3b90b1f5ad2"
+    },
+    {
+      "name": "20261021224409_default_commission_2",
+      "sha256": "e4d4fa58c599b265a5787f35d22a2259f9f60ba42a9d07dfdc6ee6ee1f229783"
+    },
+    {
+      "name": "20261021232540_expenses_cash_mpesa_shift",
+      "sha256": "de6e9298463fa3aac9b15b1a23acb08ba371cca0827ae26d8d561ba7306fcc34"
+    },
+    {
+      "name": "20261021234701_supplier_purchases",
+      "sha256": "6895c12b67e4a97909033c7dd72d6fb61b748db0792de48ea1bb371bebe3c34b"
+    },
+    {
+      "name": "20261022000322_auto_number_expenses_purchases",
+      "sha256": "eab262246d74161630e3211bb4008f146a2ad9fd1ed04d90c2accca87bb5a4bb"
+    },
+    {
+      "name": "20261029000100_mpesa_reference_unique",
+      "sha256": "e5e473b43b762056f029108f2b152111ad9b7e2a473e281f5d08cacb3a3d6022"
+    },
+    {
+      "name": "20261029000200_item_stock_reversals",
+      "sha256": "32ebb8acf67b8410490e2f1ea7ff643482b36d460d6512600bf7e02df49883b7"
+    },
+    {
+      "name": "20261029000300_stock_count_sessions",
+      "sha256": "9994cf0f329a7ff55ba0a8ae0da40f9573f75433fe88f67c063084f82d62f9c4"
+    },
+    {
+      "name": "20261029000400_order_number_sequence",
+      "sha256": "8a89c6123df6705b457616ba8db9d5bd283f025ab5ab0e90214b779928827fc0"
+    },
+    {
+      "name": "20261029000500_accounting_integrity",
+      "sha256": "56abca9ae0359b05b7279131332074f31bfe0b2b7755d1ea4f7d1267598b1af9"
+    },
+    {
+      "name": "20261029000600_user_session_version",
+      "sha256": "5d24eb7537c0754fe84354c70e78ece2f554a4e8bc43c4589086fc3aed677bc8"
+    },
+    {
+      "name": "20261101000100_financial_reversals_returns",
+      "sha256": "6d1d0ff3ccfac65a60da7e944e382f08b0db5b1f4838dd6e8a6ba2c9a50fac14"
+    },
+    {
+      "name": "20261102000100_purchase_invoice_provenance",
+      "sha256": "ccddc6b6992493127aa61a2c57103749791c41429b03618d08c784294208999c"
+    },
+    {
+      "name": "20261102000200_settings_administration_audit",
+      "sha256": "b8ce86b63a1ee19623a5ce98b9f6c63cec17a355951da85c4d3546fdf55b4f37"
+    },
+    {
+      "name": "20261103000100_split_staff_audit",
+      "sha256": "c4e31266d36dd49706e34df30ea3e4a8c660da1c48cff0227e623dad2684072b"
+    },
+    {
+      "name": "20261103000200_runtime_ledger_lock",
+      "sha256": "77a5a3c215a37791c100833dae2a5adf6ef8278457709d927ef7f0011b3af29c"
+    },
+    {
+      "name": "20261107000100_supplier_accounting",
+      "sha256": "80fbda0b7535c69b4830785d6189d9ec5d347088f7f2f8e6fd6816369df56909"
+    },
+    {
+      "name": "20261109000100_accounting_workflows",
+      "sha256": "8b93e879da4e4316adb978cbe43c2b5b59a3d55bdff46c2e7ed745b4d66dbdeb"
+    },
+    {
+      "name": "20261112000100_employee_finance_foundation",
+      "sha256": "6fa53a34d15b9fb42b1221c6e85d5f8dd27e13505c058c8a17b709407fd0afdc"
+    },
+    {
+      "name": "20261112000200_employee_finance_allocation_lock",
+      "sha256": "1fd7683b3b7bede32cd5e8a159aa95151008d61082fa432813d85f835666ae96"
+    },
+    {
+      "name": "20261112000300_employee_finance_application",
+      "sha256": "1d75f19a2b029df92858328686cd017b097e0a5b477411e8307cdce30649ccf6"
+    },
+    {
+      "name": "20261114000100_core_administration",
+      "sha256": "b8d231396d611286d3596f52496a5ce7a079dd4c53450af59d1b9c34d8810355"
+    },
+    {
+      "name": "20261115000100_payroll_storage_corrections",
+      "sha256": "2a912354d2b137b58e0b808d6525d7ca425f34560c53850d145c955948a6ebd7"
+    },
+    {
+      "name": "20261118000100_receiving_business_days",
+      "sha256": "ff9c87b42bbafbe6b94ef22915f1374673c152c90e35b821eb2f7721a12f9e5b"
+    },
+    {
+      "name": "20261119000100_sale_pricing_corrections",
+      "sha256": "73b5e0a508101867ec7a2544ba59423445f980bb4479ca438b3bb0e921a70e93"
+    }
+  ],
+  "schemaSha256": "52120e096c5ad12c26a70993bdd8e3865dd2a1c94ebdecd400323305a6fa9adb"
+}

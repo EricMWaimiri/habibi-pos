@@ -1,0 +1,18 @@
+[
+  {
+    "path": "releases/core-functionality/ADVANCE-GUARD-FIX.sql",
+    "sha256": "d1f2fc326aa4a10c647aeb2c2cdf8ea9847e0f6ad8a332c87575c5cd8d13f640"
+  },
+  {
+    "path": "releases/core-functionality/PAYROLL-SOURCE-GUARD-FIX.sql",
+    "sha256": "a651efde11728dbc19af06e6abdf69c0751a16a5449d9db9d92f156d32d50251"
+  },
+  {
+    "path": "releases/core-functionality/receiving-business-day/RECEIPT-GUARD-FIX.sql",
+    "sha256": "ef6d762e2e238f47b172e524f4fdb2283cc6ee6d930766d8a8beb1eb1e25cb97"
+  },
+  {
+    "path": "releases/core-functionality/receiving-business-day/SHIFT-UTC-GUARD-FIX.sql",
+    "sha256": "10ae7d8a4b79cacb10eb00c94e311502ab08b3a8640bf1448e2b9486558cc765"
+  }
+]

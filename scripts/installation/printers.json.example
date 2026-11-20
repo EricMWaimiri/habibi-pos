@@ -1,0 +1,11 @@
+{
+  "DRY_RUN": true,
+  "PORT": 9100,
+  "COUNTER": {
+    "name": "Receipt preview"
+  },
+  "WAITER_PRINTERS": {},
+  "DEFAULT_WAITER": {
+    "name": "Docket preview"
+  }
+}

@@ -1,0 +1,13 @@
+'use strict';
+const router=require('express').Router();
+const {authenticate,requireActiveUser}=require('../middlewares/auth.middleware');
+const {can}=require('../middlewares/permission.middleware');
+const ctrl=require('../controllers/financial-operations.controller');
+router.use(authenticate,requireActiveUser,can('pay.void','sales.return','sales.void','sales.remove_item','sales.discount','sales.change_price'));
+router.get('/',ctrl.list);
+router.get('/sales/:id/options',ctrl.options);
+router.get('/sales/:id/quote',ctrl.quote);
+router.post('/sales/:id/pricing-quote',ctrl.pricingQuote);
+router.post('/',ctrl.create);
+router.post('/:id/decision',ctrl.decide);
+module.exports=router;

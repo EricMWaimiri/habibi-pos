@@ -1,0 +1,1574 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  goodsReceipts SupplierGoodsReceipt[]
+  businessDayPolicies BusinessDayPolicy[]
+
+  salaryProfiles EmployeeSalaryProfile[] @relation("SalaryEmployee")
+  salaryProfilesRecorded EmployeeSalaryProfile[] @relation("SalaryActor")
+  customRolesCreated CustomRole[]
+  customRoleAssignment UserCustomRole? @relation("CustomRoleMember")
+  customRolesAssigned UserCustomRole[] @relation("CustomRoleAssigner")
+  id                                                                                    String                            @id @default(cuid())
+  name                                                                                  String
+  email                                                                                 String?                           @unique
+  password                                                                              String?
+  role                                                                                  Role                              @default(WAITER)
+  isActive                                                                              Boolean                           @default(true)
+  createdAt                                                                             DateTime                          @default(now())
+  updatedAt                                                                             DateTime                          @updatedAt
+  pinHash                                                                               String?                           @unique
+  commissionRate                                                                        Decimal                           @default(2.00) @db.Decimal(5, 2)
+  sessionVersion                                                                        Int                               @default(0)
+  accounting_adjustments_accounting_adjustments_actor_idTousers                         accounting_adjustments[]          @relation("accounting_adjustments_actor_idTousers")
+  accounting_adjustments_accounting_adjustments_approved_by_idTousers                   accounting_adjustments[]          @relation("accounting_adjustments_approved_by_idTousers")
+  accounting_allocation_reversals_accounting_allocation_reversals_actor_idTousers       accounting_allocation_reversals[] @relation("accounting_allocation_reversals_actor_idTousers")
+  accounting_allocation_reversals_accounting_allocation_reversals_approved_by_idTousers accounting_allocation_reversals[] @relation("accounting_allocation_reversals_approved_by_idTousers")
+  accounting_approval_requests_accounting_approval_requests_decided_by_idTousers        accounting_approval_requests[]    @relation("accounting_approval_requests_decided_by_idTousers")
+  accounting_approval_requests_accounting_approval_requests_requester_idTousers         accounting_approval_requests[]    @relation("accounting_approval_requests_requester_idTousers")
+  accounting_audit_events                                                               accounting_audit_events[]
+  accounting_documents                                                                  accounting_documents[]
+  accounting_expense_settlements                                                        accounting_expense_settlements[]
+  accounting_purchase_postings                                                          accounting_purchase_postings[]
+  accounting_supplier_openings_accounting_supplier_openings_actor_idTousers             accounting_supplier_openings[]    @relation("accounting_supplier_openings_actor_idTousers")
+  accounting_supplier_openings_accounting_supplier_openings_approved_by_idTousers       accounting_supplier_openings[]    @relation("accounting_supplier_openings_approved_by_idTousers")
+  accounting_write_receipts                                                             accounting_write_receipts[]
+  administrationEvents                                                                  AdministrationEvent[]             @relation("AdministrationActor")
+  targetedAdministrationEvents                                                          AdministrationEvent[]             @relation("AdministrationTarget")
+  employee_advance_recoveries                                                           employee_advance_recoveries[]
+  employee_finance_allocations_employee_finance_allocations_actor_idTousers             employee_finance_allocations[]    @relation("employee_finance_allocations_actor_idTousers")
+  employee_finance_allocations_employee_finance_allocations_employee_idTousers          employee_finance_allocations[]    @relation("employee_finance_allocations_employee_idTousers")
+  employee_finance_cash_employee_finance_cash_actor_idTousers                           employee_finance_cash[]           @relation("employee_finance_cash_actor_idTousers")
+  employee_finance_cash_employee_finance_cash_employee_idTousers                        employee_finance_cash[]           @relation("employee_finance_cash_employee_idTousers")
+  employee_finance_events                                                               employee_finance_events[]
+  employee_finance_operations                                                           employee_finance_operations[]
+  employee_finance_receipts                                                             employee_finance_receipts[]
+  employee_payroll_drafts_employee_payroll_drafts_actor_idTousers                       employee_payroll_drafts[]         @relation("employee_payroll_drafts_actor_idTousers")
+  employee_payroll_drafts_employee_payroll_drafts_employee_idTousers                    employee_payroll_drafts[]         @relation("employee_payroll_drafts_employee_idTousers")
+  employee_payroll_events                                                               employee_payroll_events[]
+  employee_payroll_periods                                                              employee_payroll_periods[]
+  employee_salary_advances_employee_salary_advances_actor_idTousers                     employee_salary_advances[]        @relation("employee_salary_advances_actor_idTousers")
+  employee_salary_advances_employee_salary_advances_employee_idTousers                  employee_salary_advances[]        @relation("employee_salary_advances_employee_idTousers")
+  expense_categories                                                                    expense_categories[]
+  expenses                                                                              Expense[]
+  financialAdjustments                                                                  FinancialAdjustment[]
+  financialRequests                                                                     FinancialRequest[]                @relation("RequestActor")
+  financialDecisions                                                                    FinancialRequest[]                @relation("RequestReviewer")
+  paymentsTaken                                                                         Payment[]                         @relation("ReceivedPayments")
+  settingsEdits                                                                         PosSettings[]                     @relation("SettingsEditor")
+  purchases                                                                             Purchase[]
+  accountingEvents                                                                      SaleAccountingEvent[]
+  cashierSales                                                                          Sale[]                            @relation("CashierSales")
+  createdSales                                                                          Sale[]                            @relation("CreatedSales")
+  waiterSales                                                                           Sale[]                            @relation("WaiterSales")
+  assignments                                                                           ShiftAssignment[]
+  closedShifts                                                                          Shift[]                           @relation("ClosedShifts")
+  openedShifts                                                                          Shift[]                           @relation("OpenedShifts")
+  stockCountEvents                                                                      StockCountEvent[]
+  approvedCounts                                                                        StockCount[]                      @relation("CountApprovedBy")
+  stockCounts                                                                           StockCount[]                      @relation("CountedBy")
+  submittedCounts                                                                       StockCount[]                      @relation("CountSubmittedBy")
+  stockMovements                                                                        StockMovement[]
+  supplier_credit_allocations                                                           supplier_credit_allocations[]
+  supplier_credit_notes_supplier_credit_notes_approved_by_idTousers                     supplier_credit_notes[]           @relation("supplier_credit_notes_approved_by_idTousers")
+  supplier_credit_notes_supplier_credit_notes_requester_idTousers                       supplier_credit_notes[]           @relation("supplier_credit_notes_requester_idTousers")
+  supplier_payment_allocations                                                          supplier_payment_allocations[]
+  supplier_payments                                                                     supplier_payments[]
+  suppliers                                                                             suppliers[]
+
+  @@map("users")
+  refs_payroll_draft_revisions_actor_id payroll_draft_revisions[] @relation("payroll_draft_revisions_actor_id_relation")
+  refs_payroll_corrections_actor_id payroll_corrections[] @relation("payroll_corrections_actor_id_relation")
+  refs_payroll_correction_events_actor_id payroll_correction_events[] @relation("payroll_correction_events_actor_id_relation")
+  refs_payroll_correction_applications_actor_id payroll_correction_applications[] @relation("payroll_correction_applications_actor_id_relation")
+  refs_payroll_overpayment_claims_employee_id payroll_overpayment_claims[] @relation("payroll_overpayment_claims_employee_id_relation")
+  refs_payroll_overpayment_recoveries_actor_id payroll_overpayment_recoveries[] @relation("payroll_overpayment_recoveries_actor_id_relation")
+  refs_payroll_overpayment_recoveries_approved_by_id payroll_overpayment_recoveries[] @relation("payroll_overpayment_recoveries_approved_by_id_relation")
+  refs_accounting_closed_periods_actor_id accounting_closed_periods[] @relation("accounting_closed_periods_actor_id_relation")
+  refs_accounting_closed_periods_approved_by_id accounting_closed_periods[] @relation("accounting_closed_periods_approved_by_id_relation")
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  description String?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  products    Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  operationalLocation String?
+  id              String             @id @default(cuid())
+  name            String
+  type            ProductType        @default(simple)
+  categoryId      String?
+  unitOfMeasure   String             @default("pcs")
+  cost            Decimal            @default(0) @db.Decimal(12, 2)
+  price           Decimal            @db.Decimal(12, 2)
+  wholesalePrice  Decimal?           @db.Decimal(12, 2)
+  quantity        Decimal            @default(0) @db.Decimal(12, 6)
+  productCode     String             @unique
+  isActive        Boolean            @default(true)
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  countSessionId  String?
+  returnsAllowed  Boolean            @default(true)
+  usedIn          ProductComponent[] @relation("ComponentProduct")
+  components      ProductComponent[] @relation("ParentProduct")
+  category        Category?          @relation(fields: [categoryId], references: [id])
+  countSession    StockCount?        @relation("ProductCountClaim", fields: [countSessionId], references: [id], onDelete: Restrict)
+  purchaseItems   PurchaseItem[]
+  saleItems       SaleItem[]
+  stockCountItems StockCountItem[]
+  stockMovements  StockMovement[]
+
+  @@index([categoryId])
+  @@index([countSessionId])
+  @@index([productCode])
+  @@map("products")
+}
+
+model ProductComponent {
+  id                 String  @id @default(cuid())
+  parentProductId    String
+  componentProductId String
+  quantity           Decimal @db.Decimal(12, 6)
+  componentProduct   Product @relation("ComponentProduct", fields: [componentProductId], references: [id])
+  parentProduct      Product @relation("ParentProduct", fields: [parentProductId], references: [id], onDelete: Cascade)
+
+  @@unique([parentProductId, componentProductId])
+  @@map("product_components")
+}
+
+model Sale {
+  id                           String                         @id @default(cuid())
+  saleNumber                   String                         @unique @default(dbgenerated("next_order_number()"))
+  status                       SaleStatus                     @default(UNPAID)
+  subtotal                     Decimal                        @default(0) @db.Decimal(12, 2)
+  discount                     Decimal                        @default(0) @db.Decimal(12, 2)
+  total                        Decimal                        @default(0) @db.Decimal(12, 2)
+  amountPaid                   Decimal                        @default(0) @db.Decimal(12, 2)
+  balance                      Decimal                        @default(0) @db.Decimal(12, 2)
+  notes                        String?
+  waiterId                     String?
+  cashierId                    String?
+  createdById                  String?
+  shiftId                      String?
+  createdAt                    DateTime                       @default(now())
+  updatedAt                    DateTime                       @updatedAt
+  mergedIntoId                 String?
+  accountingDate               DateTime?                      @db.Date
+  commissionRateSnapshot       Decimal?                       @db.Decimal(5, 2)
+  commissionEarnedAt           DateTime?
+  commissionAmount             Decimal?                       @db.Decimal(12, 2)
+  splitFromId                  String?
+  splitRequestId               String?                        @unique @db.Uuid
+  commissionCapSnapshot        Decimal?                       @db.Decimal(12, 2)
+  docket                       Docket?
+  employee_finance_allocations employee_finance_allocations[]
+  employee_finance_receipts    employee_finance_receipts[]
+  employee_settlement_links    employee_settlement_links[]
+  financialAdjustments         FinancialAdjustment[]
+  financialRequests            FinancialRequest[]
+  payments                     Payment[]
+  accountingEvents             SaleAccountingEvent[]
+  items                        SaleItem[]
+  originalStockItems           SaleItem[]                     @relation("StockOrigin")
+  cashier                      User?                          @relation("CashierSales", fields: [cashierId], references: [id])
+  createdBy                    User?                          @relation("CreatedSales", fields: [createdById], references: [id])
+  shift                        Shift?                         @relation(fields: [shiftId], references: [id])
+  splitFrom                    Sale?                          @relation("SplitOrigin", fields: [splitFromId], references: [id], onDelete: Restrict)
+  splitChildren                Sale[]                         @relation("SplitOrigin")
+  waiter                       User?                          @relation("WaiterSales", fields: [waiterId], references: [id])
+
+  @@index([status])
+  @@index([waiterId])
+  @@index([shiftId])
+  @@map("sales")
+}
+
+model SaleItem {
+  operationalLocation String?
+  id                   String                @id @default(cuid())
+  saleId               String
+  productId            String
+  quantity             Float
+  unitPrice            Decimal               @db.Decimal(12, 2)
+  unitCost             Decimal               @default(0) @db.Decimal(12, 2)
+  discount             Decimal               @default(0) @db.Decimal(12, 2)
+  subtotal             Decimal               @db.Decimal(12, 2)
+  stockDeductionCount  Int?
+  removedAt            DateTime?
+  returnEligible       Boolean?
+  stockOriginSaleId    String?
+  financialAdjustments FinancialAdjustment[]
+  financialRequests    FinancialRequest[]
+  product              Product               @relation(fields: [productId], references: [id])
+  sale                 Sale                  @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  stockOriginSale      Sale?                 @relation("StockOrigin", fields: [stockOriginSaleId], references: [id], onDelete: Restrict)
+  stockMovements       StockMovement[]
+
+  @@index([saleId])
+  @@map("sale_items")
+}
+
+model Payment {
+  id                   String               @id @default(cuid())
+  saleId               String
+  method               PaymentMethod
+  amount               Decimal              @db.Decimal(12, 2)
+  reference            String?
+  receivedById         String?
+  createdAt            DateTime             @default(now())
+  receivedShiftId      String?
+  voidAdjustment       FinancialAdjustment? @relation("VoidedPayment")
+  settlementAdjustment FinancialAdjustment? @relation("SettlementPayment")
+  financialRequests    FinancialRequest[]
+  receivedBy           User?                @relation("ReceivedPayments", fields: [receivedById], references: [id])
+  receivedShift        Shift?               @relation("ReceivedShiftPayments", fields: [receivedShiftId], references: [id])
+  sale                 Sale                 @relation(fields: [saleId], references: [id], onDelete: Cascade)
+
+  @@index([saleId])
+  @@index([receivedShiftId])
+  @@map("payments")
+}
+
+model Docket {
+  id        String       @id @default(cuid())
+  saleId    String       @unique
+  status    DocketStatus @default(PENDING)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  sale      Sale         @relation(fields: [saleId], references: [id], onDelete: Cascade)
+
+  @@map("dockets")
+}
+
+model Shift {
+  businessDayPeriodId String? @map("business_day_period_id") @db.Uuid
+  businessDayPeriod BusinessDayPeriod? @relation(fields: [businessDayPeriodId], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  goodsReceipts SupplierGoodsReceipt[]
+  @@index([businessDayPeriodId], map: "shifts_business_day_period")
+
+  id                              String                            @id @default(cuid())
+  name                            String?
+  status                          ShiftStatus                       @default(OPEN)
+  openingCash                     Decimal                           @default(0) @db.Decimal(12, 2)
+  closingCash                     Decimal?                          @db.Decimal(12, 2)
+  expectedCash                    Decimal?                          @db.Decimal(12, 2)
+  notes                           String?
+  openedById                      String
+  closedById                      String?
+  openedAt                        DateTime                          @default(now())
+  closedAt                        DateTime?
+  accounting_adjustments          accounting_adjustments[]
+  accounting_allocation_reversals accounting_allocation_reversals[]
+  accounting_expense_settlements  accounting_expense_settlements[]
+  accounting_supplier_openings    accounting_supplier_openings[]
+  employee_finance_allocations    employee_finance_allocations[]
+  employee_finance_cash           employee_finance_cash[]
+  employee_finance_receipts       employee_finance_receipts[]
+  employee_salary_advances        employee_salary_advances[]
+  expenses                        Expense[]
+  financialAdjustments            FinancialAdjustment[]
+  receivedPayments                Payment[]                         @relation("ReceivedShiftPayments")
+  purchases                       Purchase[]
+  sales                           Sale[]
+  assignments                     ShiftAssignment[]
+  closedBy                        User?                             @relation("ClosedShifts", fields: [closedById], references: [id])
+  openedBy                        User                              @relation("OpenedShifts", fields: [openedById], references: [id])
+  supplier_credit_notes           supplier_credit_notes[]
+  supplier_payments               supplier_payments[]
+
+  @@index([status])
+  @@map("shifts")
+}
+
+model ShiftAssignment {
+  id        String   @id @default(cuid())
+  shiftId   String
+  userId    String
+  createdAt DateTime @default(now())
+  shift     Shift    @relation(fields: [shiftId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([shiftId, userId])
+  @@map("shift_assignments")
+}
+
+model StockMovement {
+  goodsReceiptLine SupplierGoodsReceiptLine?
+
+  id                                                                                    String                    @id @default(cuid())
+  productId                                                                             String
+  type                                                                                  StockMovementType
+  quantityChange                                                                        Decimal                   @db.Decimal(12, 6)
+  previousQty                                                                           Decimal                   @db.Decimal(12, 6)
+  quantityAfter                                                                         Decimal                   @db.Decimal(12, 6)
+  reason                                                                                String?
+  saleId                                                                                String?
+  userId                                                                                String?
+  createdAt                                                                             DateTime                  @default(now())
+  saleItemId                                                                            String?
+  reversalOfId                                                                          String?                   @unique
+  stockCountItemId                                                                      String?                   @unique
+  returnPortionId                                                                       String?                   @unique
+  purchaseItemId                                                                        String?                   @unique
+  accounting_credit_items_accounting_credit_items_movement_idTostock_movements          accounting_credit_items?  @relation("accounting_credit_items_movement_idTostock_movements")
+  accounting_credit_items_accounting_credit_items_original_movement_idTostock_movements accounting_credit_items[] @relation("accounting_credit_items_original_movement_idTostock_movements")
+  product                                                                               Product                   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  purchaseItem                                                                          PurchaseItem?             @relation(fields: [purchaseItemId], references: [id], onDelete: Restrict)
+  returnPortion                                                                         StockReturnPortion?       @relation("ReturnMovement", fields: [returnPortionId], references: [id], onDelete: Restrict)
+  reversalOf                                                                            StockMovement?            @relation("StockReversal", fields: [reversalOfId], references: [id], onDelete: Restrict)
+  reversal                                                                              StockMovement?            @relation("StockReversal")
+  saleItem                                                                              SaleItem?                 @relation(fields: [saleItemId], references: [id], onDelete: Restrict)
+  stockCountItem                                                                        StockCountItem?           @relation(fields: [stockCountItemId], references: [id], onDelete: Restrict)
+  user                                                                                  User?                     @relation(fields: [userId], references: [id])
+  returnPortions                                                                        StockReturnPortion[]      @relation("OriginalMovement")
+
+  @@index([productId])
+  @@index([saleItemId])
+  @@map("stock_movements")
+}
+
+model StockCount {
+  id              String            @id @default(cuid())
+  status          StockCountStatus  @default(DRAFT)
+  notes           String?
+  countedById     String?
+  createdAt       DateTime          @default(now())
+  completedAt     DateTime?
+  baselineAt      DateTime?
+  readyAt         DateTime?
+  expiresAt       DateTime?
+  submittedAt     DateTime?
+  submittedById   String?
+  approvedById    String?
+  stockApplied    Boolean?
+  claimedProducts Product[]         @relation("ProductCountClaim")
+  events          StockCountEvent[]
+  items           StockCountItem[]
+  approvedBy      User?             @relation("CountApprovedBy", fields: [approvedById], references: [id])
+  countedBy       User?             @relation("CountedBy", fields: [countedById], references: [id])
+  submittedBy     User?             @relation("CountSubmittedBy", fields: [submittedById], references: [id])
+
+  @@map("stock_counts")
+}
+
+model StockCountItem {
+  id                    String         @id @default(cuid())
+  stockCountId          String
+  productId             String
+  systemQty             Decimal        @db.Decimal(12, 6)
+  countedQty            Decimal?       @db.Decimal(12, 6)
+  difference            Decimal?       @db.Decimal(12, 6)
+  baselineMovementCount Int?
+  product               Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  stockCount            StockCount     @relation(fields: [stockCountId], references: [id], onDelete: Cascade)
+  correction            StockMovement?
+
+  @@unique([stockCountId, productId])
+  @@map("stock_count_items")
+}
+
+model StockCountEvent {
+  id           String     @id @default(cuid())
+  stockCountId String
+  userId       String?
+  action       String
+  details      Json?
+  createdAt    DateTime   @default(now())
+  stockCount   StockCount @relation(fields: [stockCountId], references: [id])
+  user         User?      @relation(fields: [userId], references: [id])
+
+  @@index([stockCountId])
+  @@map("stock_count_events")
+}
+
+model RolePermission {
+  id         String   @id @default(cuid())
+  role       Role
+  permission String
+  enabled    Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([role, permission])
+  @@index([role])
+  @@map("role_permissions")
+}
+
+model Expense {
+  id                             String                           @id @default(cuid())
+  amount                         Decimal                          @db.Decimal(12, 2)
+  category                       String
+  description                    String
+  createdAt                      DateTime                         @default(now())
+  recordedById                   String?
+  method                         PaymentMethod                    @default(CASH)
+  shiftId                        String?
+  expenseNumber                  String                           @unique
+  categoryId                     String?
+  categoryKindSnapshot           String?
+  paymentStatus                  String                           @default("PAID")
+  supplierId                     String?
+  reference                      String?
+  accounting_adjustments         accounting_adjustments[]
+  accounting_documents           accounting_documents?
+  accounting_expense_settlements accounting_expense_settlements[]
+  expense_categories             expense_categories?              @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  recordedBy                     User?                            @relation(fields: [recordedById], references: [id])
+  shift                          Shift?                           @relation(fields: [shiftId], references: [id])
+  suppliers                      suppliers?                       @relation(fields: [supplierId], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  purchase                       Purchase?
+  supplier_payments              supplier_payments?
+
+  @@index([categoryId, createdAt, id], map: "expenses_category_id_date")
+  @@map("expenses")
+}
+
+model Purchase {
+  separateReceiving SupplierInvoiceReceiving?
+
+  id                           String                        @id @default(cuid())
+  invoiceNumber                String?
+  supplierName                 String
+  totalAmount                  Decimal                       @db.Decimal(12, 2)
+  method                       PaymentMethod                 @default(CASH)
+  createdAt                    DateTime                      @default(now())
+  recordedById                 String?
+  purchaseNumber               String                        @unique
+  clientKey                    String?                       @unique
+  requestHash                  String?
+  invoiceDate                  DateTime?                     @db.Date
+  shiftId                      String?
+  expenseId                    String?                       @unique
+  supplierId                   String?
+  settlementMode               String?
+  accounting_adjustments       accounting_adjustments[]
+  accounting_documents         accounting_documents?
+  accounting_purchase_postings accounting_purchase_postings?
+  items                        PurchaseItem[]
+  expense                      Expense?                      @relation(fields: [expenseId], references: [id], onDelete: Restrict)
+  recordedBy                   User?                         @relation(fields: [recordedById], references: [id])
+  shift                        Shift?                        @relation(fields: [shiftId], references: [id], onDelete: Restrict)
+  suppliers                    suppliers?                    @relation(fields: [supplierId], references: [id], onDelete: Restrict, onUpdate: NoAction)
+
+  @@index([invoiceDate])
+  @@index([shiftId, createdAt])
+  @@index([supplierId, createdAt, id], map: "purchases_supplier_date")
+  @@map("purchases")
+}
+
+model PurchaseItem {
+  goodsReceiptLines SupplierGoodsReceiptLine[]
+
+  id                      String                    @id @default(cuid())
+  purchaseId              String
+  productId               String
+  quantity                Decimal                   @db.Decimal(12, 6)
+  unitCost                Decimal                   @db.Decimal(12, 2)
+  totalCost               Decimal                   @db.Decimal(12, 2)
+  accounting_credit_items accounting_credit_items[]
+  product                 Product                   @relation(fields: [productId], references: [id])
+  purchase                Purchase                  @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  stockMovement           StockMovement?
+
+  @@map("purchase_items")
+}
+
+model SaleAccountingEvent {
+  id        String   @id @default(cuid())
+  saleId    String
+  actorId   String
+  action    String
+  reason    String?
+  details   Json
+  createdAt DateTime @default(now())
+  actor     User     @relation(fields: [actorId], references: [id])
+  sale      Sale     @relation(fields: [saleId], references: [id])
+
+  @@index([saleId, createdAt])
+  @@map("sale_accounting_events")
+}
+
+model FinancialRequest {
+  id             String               @id @default(cuid())
+  kind           String
+  saleId         String
+  paymentId      String?
+  saleItemId     String?
+  quantity       Decimal?             @db.Decimal(12, 6)
+  reason         String
+  payload        Json
+  requestedById  String
+  reviewedById   String?
+  status         String               @default("PENDING")
+  decisionReason String?
+  createdAt      DateTime             @default(now())
+  decidedAt      DateTime?
+  clientKey      String               @unique
+  adjustment     FinancialAdjustment?
+  payment        Payment?             @relation(fields: [paymentId], references: [id], onDelete: Restrict)
+  requestedBy    User                 @relation("RequestActor", fields: [requestedById], references: [id])
+  reviewedBy     User?                @relation("RequestReviewer", fields: [reviewedById], references: [id], onDelete: Restrict)
+  sale           Sale                 @relation(fields: [saleId], references: [id])
+  saleItem       SaleItem?            @relation(fields: [saleItemId], references: [id], onDelete: Restrict)
+
+  @@index([status, createdAt])
+  @@index([saleId])
+  @@map("financial_requests")
+}
+
+model FinancialAdjustment {
+  id                        String                     @id @default(cuid())
+  requestId                 String?                    @unique
+  saleId                    String
+  paymentId                 String?                    @unique
+  settlementPaymentId       String?                    @unique
+  saleItemId                String?
+  kind                      String
+  quantity                  Decimal?                   @db.Decimal(12, 6)
+  salesDelta                Decimal                    @default(0) @db.Decimal(12, 2)
+  collectionDelta           Decimal                    @default(0) @db.Decimal(12, 2)
+  costDelta                 Decimal                    @default(0) @db.Decimal(12, 2)
+  commissionDelta           Decimal                    @default(0) @db.Decimal(12, 2)
+  shiftId                   String?
+  actorId                   String
+  reason                    String
+  createdAt                 DateTime                   @default(now())
+  clientKey                 String?                    @unique
+  cashEntries               AdjustmentCashEntry[]
+  employee_settlement_links employee_settlement_links?
+  actor                     User                       @relation(fields: [actorId], references: [id])
+  payment                   Payment?                   @relation("VoidedPayment", fields: [paymentId], references: [id], onDelete: Restrict)
+  request                   FinancialRequest?          @relation(fields: [requestId], references: [id], onDelete: Restrict)
+  sale                      Sale                       @relation(fields: [saleId], references: [id])
+  saleItem                  SaleItem?                  @relation(fields: [saleItemId], references: [id], onDelete: Restrict)
+  settlementPayment         Payment?                   @relation("SettlementPayment", fields: [settlementPaymentId], references: [id], onDelete: Restrict)
+  shift                     Shift?                     @relation(fields: [shiftId], references: [id], onDelete: Restrict)
+  stockPortions             StockReturnPortion[]
+
+  @@index([saleId, createdAt])
+  @@index([shiftId, createdAt])
+  @@map("financial_adjustments")
+}
+
+model AdjustmentCashEntry {
+  id                String              @id @default(cuid())
+  adjustmentId      String
+  method            PaymentMethod
+  amount            Decimal             @db.Decimal(12, 2)
+  externalReference String?
+  manualExternal    Boolean             @default(false)
+  adjustment        FinancialAdjustment @relation(fields: [adjustmentId], references: [id])
+
+  @@unique([adjustmentId, method])
+  @@map("adjustment_cash_entries")
+}
+
+model StockReturnPortion {
+  id                 String              @id @default(cuid())
+  adjustmentId       String
+  originalMovementId String
+  quantity           Decimal             @db.Decimal(12, 6)
+  movement           StockMovement?      @relation("ReturnMovement")
+  adjustment         FinancialAdjustment @relation(fields: [adjustmentId], references: [id])
+  originalMovement   StockMovement       @relation("OriginalMovement", fields: [originalMovementId], references: [id])
+
+  @@unique([adjustmentId, originalMovementId])
+  @@index([originalMovementId])
+  @@map("stock_return_portions")
+}
+
+model PosSettings {
+  id          String   @id @default("global")
+  version     Int      @default(0)
+  data        Json     @default("{}")
+  updatedById String?
+  updatedAt   DateTime @default(now()) @updatedAt
+  updatedBy   User?    @relation("SettingsEditor", fields: [updatedById], references: [id], onDelete: Restrict)
+
+  @@map("pos_settings")
+}
+
+model AdministrationEvent {
+  id           String   @id @default(cuid())
+  actorId      String
+  scope        String
+  categories   String[]
+  reason       String
+  before       Json
+  after        Json
+  revision     Int?
+  createdAt    DateTime @default(now())
+  targetUserId String?
+  actor        User     @relation("AdministrationActor", fields: [actorId], references: [id])
+  targetUser   User?    @relation("AdministrationTarget", fields: [targetUserId], references: [id], onDelete: Restrict)
+
+  @@index([scope, createdAt])
+  @@index([targetUserId, createdAt])
+  @@map("administration_events")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model accounting_adjustments {
+  id                                                 String                        @id
+  kind                                               String
+  supplier_payment_id                                String?
+  expense_id                                         String?
+  purchase_id                                        String?
+  credit_note_id                                     String?
+  payable_delta                                      Decimal                       @default(0) @db.Decimal(12, 2)
+  operating_expense_delta                            Decimal                       @default(0) @db.Decimal(12, 2)
+  cash_delta                                         Decimal                       @default(0) @db.Decimal(12, 2)
+  reason                                             String
+  posting_date                                       DateTime                      @db.Date
+  shift_id                                           String
+  actor_id                                           String
+  approved_by_id                                     String
+  approval_request_id                                String?                       @unique
+  created_at                                         DateTime                      @default(now()) @db.Timestamptz(6)
+  metadata                                           Json                          @default("{}")
+  payment_method                                     PaymentMethod?
+  payroll_id                                         String?                       @db.Uuid
+  employee_advance_id                                String?                       @unique @db.Uuid
+  users_accounting_adjustments_actor_idTousers       User                          @relation("accounting_adjustments_actor_idTousers", fields: [actor_id], references: [id], onUpdate: NoAction)
+  accounting_approval_requests                       accounting_approval_requests? @relation(fields: [approval_request_id], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  users_accounting_adjustments_approved_by_idTousers User                          @relation("accounting_adjustments_approved_by_idTousers", fields: [approved_by_id], references: [id], onUpdate: NoAction)
+  supplier_credit_notes                              supplier_credit_notes?        @relation(fields: [credit_note_id], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  employee_salary_advances                           employee_salary_advances?     @relation(fields: [employee_advance_id], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  expenses                                           Expense?                      @relation(fields: [expense_id], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  employee_payroll_drafts                            employee_payroll_drafts?      @relation(fields: [payroll_id], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  purchases                                          Purchase?                     @relation(fields: [purchase_id], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  shifts                                             Shift                         @relation(fields: [shift_id], references: [id], onUpdate: NoAction)
+  supplier_payments                                  supplier_payments?            @relation(fields: [supplier_payment_id], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  employee_finance_cash                              employee_finance_cash?
+  employee_payroll_postings                          employee_payroll_postings?
+
+  @@index([posting_date, shift_id, id], map: "accounting_adjustments_period")
+  employee_receivable_delta Decimal? @db.Decimal(12, 2)
+  employee_advance_delta Decimal? @db.Decimal(12, 2)
+  employee_overpayment_delta Decimal? @db.Decimal(12, 2)
+  employee_tip_liability_delta Decimal? @db.Decimal(12, 2)
+  other_recovery_liability_delta Decimal? @db.Decimal(12, 2)
+  reverses_adjustment_id String? @unique
+  payroll_correction_id String? @db.Uuid
+  refs_payroll_advance_reversals_accounting_adjustment_id payroll_advance_reversals[] @relation("payroll_advance_reversals_accounting_adjustment_id_relation")
+  refs_payroll_overpayment_claims_accounting_adjustment_id payroll_overpayment_claims? @relation("payroll_overpayment_claims_accounting_adjustment_id_relation")
+  refs_payroll_overpayment_recoveries_accounting_adjustment_id payroll_overpayment_recoveries? @relation("payroll_overpayment_recoveries_accounting_adjustment_id_relation")
+  related_payroll_correction_id payroll_correction_applications? @relation("accounting_adjustments_payroll_correction_id_relation", fields: [payroll_correction_id], references: [correction_id], onDelete: Restrict, onUpdate: NoAction, map: "accounting_adjustments_payroll_correction_id_fkey")
+  related_reverses_adjustment_id accounting_adjustments? @relation("accounting_adjustments_reverses_adjustment_id_relation", fields: [reverses_adjustment_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "accounting_adjustments_reverses_adjustment_id_fkey")
+  refs_accounting_adjustments_reverses_adjustment_id accounting_adjustments? @relation("accounting_adjustments_reverses_adjustment_id_relation")
+  @@index([payroll_correction_id], map: "accounting_adjustments_review_lookup")
+  claim_adjustment payroll_overpayment_claim_adjustments? @relation("claim_adjustment_journal")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model accounting_approval_requests {
+  id                                                      String                  @id
+  request_id                                              String                  @unique @db.Uuid
+  requester_id                                            String
+  action                                                  String
+  payload                                                 Json
+  reason                                                  String
+  status                                                  String                  @default("PENDING")
+  decided_by_id                                           String?
+  decision_reason                                         String?
+  created_at                                              DateTime                @default(now()) @db.Timestamptz(6)
+  decided_at                                              DateTime?               @db.Timestamptz(6)
+  accounting_adjustments                                  accounting_adjustments?
+  users_accounting_approval_requests_decided_by_idTousers User?                   @relation("accounting_approval_requests_decided_by_idTousers", fields: [decided_by_id], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  users_accounting_approval_requests_requester_idTousers  User                    @relation("accounting_approval_requests_requester_idTousers", fields: [requester_id], references: [id], onUpdate: NoAction)
+  supplier_credit_notes                                   supplier_credit_notes?
+
+  @@index([status, created_at, id], map: "accounting_approval_pending")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model accounting_audit_events {
+  id          String   @id
+  actor_id    String
+  action      String
+  target_type String
+  target_id   String
+  reason      String
+  metadata    Json
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+  users       User     @relation(fields: [actor_id], references: [id], onUpdate: NoAction)
+
+  @@index([target_type, target_id, created_at, id], map: "accounting_audit_target")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model accounting_purchase_postings {
+  purchase_id                  String                         @id
+  supplier_id                  String
+  amount                       Decimal                        @db.Decimal(12, 2)
+  due_date                     DateTime                       @db.Date
+  posting_date                 DateTime                       @db.Date
+  provenance                   String
+  actor_id                     String
+  created_at                   DateTime                       @default(now()) @db.Timestamptz(6)
+  users                        User                           @relation(fields: [actor_id], references: [id], onUpdate: NoAction)
+  purchases                    Purchase                       @relation(fields: [purchase_id], references: [id], onUpdate: NoAction)
+  suppliers                    suppliers                      @relation(fields: [supplier_id], references: [id], onUpdate: NoAction)
+  supplier_credit_allocations  supplier_credit_allocations[]
+  supplier_credit_notes        supplier_credit_notes[]
+  supplier_payment_allocations supplier_payment_allocations[]
+
+  @@unique([purchase_id, supplier_id])
+  @@index([supplier_id, due_date, purchase_id], map: "accounting_purchase_due")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model accounting_write_receipts {
+  id          String   @id @db.Uuid
+  actor_id    String
+  operation   String
+  fingerprint String
+  result_ids  Json
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+  users       User     @relation(fields: [actor_id], references: [id], onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
+model expense_categories {
+  id            String    @id
+  name          String
+  kind          String
+  is_active     Boolean   @default(true)
+  revision      Int       @default(0)
+  created_by_id String
+  created_at    DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime  @default(now()) @db.Timestamptz(6)
+  users         User      @relation(fields: [created_by_id], references: [id], onUpdate: NoAction)
+  expenses      Expense[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model supplier_credit_allocations {
+  id                              String                           @id
+  credit_note_id                  String
+  purchase_id                     String
+  supplier_id                     String
+  amount                          Decimal                          @db.Decimal(12, 2)
+  actor_id                        String
+  created_at                      DateTime                         @default(now()) @db.Timestamptz(6)
+  accounting_allocation_reversals accounting_allocation_reversals?
+  users                           User                             @relation(fields: [actor_id], references: [id], onUpdate: NoAction)
+  supplier_credit_notes           supplier_credit_notes            @relation(fields: [credit_note_id, supplier_id], references: [id, supplier_id], onUpdate: NoAction)
+  accounting_purchase_postings    accounting_purchase_postings     @relation(fields: [purchase_id, supplier_id], references: [purchase_id, supplier_id], onUpdate: NoAction)
+
+  @@index([purchase_id, id], map: "supplier_credit_allocations_invoice")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
+model supplier_credit_notes {
+  id                                                String                        @id
+  supplier_id                                       String
+  purchase_id                                       String?
+  reference                                         String
+  amount                                            Decimal                       @db.Decimal(12, 2)
+  credit_date                                       DateTime                      @db.Date
+  posting_date                                      DateTime                      @db.Date
+  reason                                            String
+  shift_id                                          String
+  requester_id                                      String
+  approved_by_id                                    String
+  approval_mode                                     String
+  approval_request_id                               String?                       @unique
+  created_at                                        DateTime                      @default(now()) @db.Timestamptz(6)
+  accounting_adjustments                            accounting_adjustments[]
+  accounting_credit_items                           accounting_credit_items[]
+  supplier_credit_allocations                       supplier_credit_allocations[]
+  accounting_approval_requests                      accounting_approval_requests? @relation(fields: [approval_request_id], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  users_supplier_credit_notes_approved_by_idTousers User                          @relation("supplier_credit_notes_approved_by_idTousers", fields: [approved_by_id], references: [id], onUpdate: NoAction)
+  accounting_purchase_postings                      accounting_purchase_postings? @relation(fields: [purchase_id, supplier_id], references: [purchase_id, supplier_id], onUpdate: NoAction)
+  users_supplier_credit_notes_requester_idTousers   User                          @relation("supplier_credit_notes_requester_idTousers", fields: [requester_id], references: [id], onUpdate: NoAction)
+  shifts                                            Shift                         @relation(fields: [shift_id], references: [id], onUpdate: NoAction)
+  suppliers                                         suppliers                     @relation(fields: [supplier_id], references: [id], onUpdate: NoAction)
+
+  @@unique([id, supplier_id])
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model supplier_payment_allocations {
+  id                              String                           @id
+  payment_id                      String
+  purchase_id                     String
+  supplier_id                     String
+  amount                          Decimal                          @db.Decimal(12, 2)
+  actor_id                        String
+  created_at                      DateTime                         @default(now()) @db.Timestamptz(6)
+  accounting_allocation_reversals accounting_allocation_reversals?
+  users                           User                             @relation(fields: [actor_id], references: [id], onUpdate: NoAction)
+  supplier_payments               supplier_payments                @relation(fields: [payment_id, supplier_id], references: [id, supplier_id], onUpdate: NoAction)
+  accounting_purchase_postings    accounting_purchase_postings     @relation(fields: [purchase_id, supplier_id], references: [purchase_id, supplier_id], onUpdate: NoAction)
+
+  @@index([purchase_id, id], map: "supplier_payment_allocations_invoice")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model supplier_payments {
+  id                           String                         @id
+  supplier_id                  String
+  amount                       Decimal                        @db.Decimal(12, 2)
+  method                       PaymentMethod
+  reference                    String?
+  paid_at                      DateTime                       @db.Timestamptz(6)
+  posting_date                 DateTime                       @db.Date
+  shift_id                     String
+  actor_id                     String
+  expense_id                   String                         @unique
+  created_at                   DateTime                       @default(now()) @db.Timestamptz(6)
+  accounting_adjustments       accounting_adjustments[]
+  supplier_payment_allocations supplier_payment_allocations[]
+  users                        User                           @relation(fields: [actor_id], references: [id], onUpdate: NoAction)
+  expenses                     Expense                        @relation(fields: [expense_id], references: [id], onUpdate: NoAction)
+  shifts                       Shift                          @relation(fields: [shift_id], references: [id], onUpdate: NoAction)
+  suppliers                    suppliers                      @relation(fields: [supplier_id], references: [id], onUpdate: NoAction)
+
+  @@unique([id, supplier_id])
+  @@index([supplier_id, posting_date, id], map: "supplier_payments_period")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
+model suppliers {
+  id                           String                         @id
+  reference                    String
+  name                         String
+  contact_name                 String?
+  email                        String?
+  phone                        String?
+  address                      String?
+  is_active                    Boolean                        @default(true)
+  revision                     Int                            @default(0)
+  created_by_id                String
+  created_at                   DateTime                       @default(now()) @db.Timestamptz(6)
+  updated_at                   DateTime                       @default(now()) @db.Timestamptz(6)
+  details                      Json                           @default("{}")
+  accounting_purchase_postings accounting_purchase_postings[]
+  accounting_supplier_openings accounting_supplier_openings[]
+  expenses                     Expense[]
+  purchases                    Purchase[]
+  supplier_credit_notes        supplier_credit_notes[]
+  supplier_payments            supplier_payments[]
+  users                        User                           @relation(fields: [created_by_id], references: [id], onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model accounting_allocation_reversals {
+  id                                                          String                        @id
+  payment_allocation_id                                       String?                       @unique
+  credit_allocation_id                                        String?                       @unique
+  reason                                                      String
+  actor_id                                                    String
+  approved_by_id                                              String
+  shift_id                                                    String
+  posting_date                                                DateTime                      @db.Date
+  created_at                                                  DateTime                      @default(now()) @db.Timestamptz(6)
+  users_accounting_allocation_reversals_actor_idTousers       User                          @relation("accounting_allocation_reversals_actor_idTousers", fields: [actor_id], references: [id], onUpdate: NoAction)
+  users_accounting_allocation_reversals_approved_by_idTousers User                          @relation("accounting_allocation_reversals_approved_by_idTousers", fields: [approved_by_id], references: [id], onUpdate: NoAction)
+  supplier_credit_allocations                                 supplier_credit_allocations?  @relation(fields: [credit_allocation_id], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  supplier_payment_allocations                                supplier_payment_allocations? @relation(fields: [payment_allocation_id], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  shifts                                                      Shift                         @relation(fields: [shift_id], references: [id], onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model accounting_credit_items {
+  id                                                                            String                @id
+  credit_note_id                                                                String
+  purchase_item_id                                                              String
+  original_movement_id                                                          String
+  quantity                                                                      Decimal               @db.Decimal(12, 6)
+  amount                                                                        Decimal               @db.Decimal(12, 2)
+  movement_id                                                                   String                @unique
+  created_at                                                                    DateTime              @default(now()) @db.Timestamptz(6)
+  supplier_credit_notes                                                         supplier_credit_notes @relation(fields: [credit_note_id], references: [id], onUpdate: NoAction)
+  stock_movements_accounting_credit_items_movement_idTostock_movements          StockMovement         @relation("accounting_credit_items_movement_idTostock_movements", fields: [movement_id], references: [id], onUpdate: NoAction)
+  stock_movements_accounting_credit_items_original_movement_idTostock_movements StockMovement         @relation("accounting_credit_items_original_movement_idTostock_movements", fields: [original_movement_id], references: [id], onUpdate: NoAction)
+  purchase_items                                                                PurchaseItem          @relation(fields: [purchase_item_id], references: [id], onUpdate: NoAction)
+
+  @@unique([credit_note_id, purchase_item_id])
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model accounting_documents {
+  id          String    @id
+  kind        String
+  status      String    @default("DRAFT")
+  payload     Json
+  revision    Int       @default(0)
+  actor_id    String
+  purchase_id String?   @unique
+  expense_id  String?   @unique
+  created_at  DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime  @default(now()) @db.Timestamptz(6)
+  users       User      @relation(fields: [actor_id], references: [id], onUpdate: NoAction)
+  expenses    Expense?  @relation(fields: [expense_id], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  purchases   Purchase? @relation(fields: [purchase_id], references: [id], onDelete: Restrict, onUpdate: NoAction)
+
+  @@index([kind, status, created_at, id], map: "accounting_documents_browse")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model accounting_expense_settlements {
+  id           String        @id
+  expense_id   String
+  amount       Decimal       @db.Decimal(12, 2)
+  method       PaymentMethod
+  reference    String?
+  actor_id     String
+  shift_id     String
+  posting_date DateTime      @db.Date
+  created_at   DateTime      @default(now()) @db.Timestamptz(6)
+  users        User          @relation(fields: [actor_id], references: [id], onUpdate: NoAction)
+  expenses     Expense       @relation(fields: [expense_id], references: [id], onUpdate: NoAction)
+  shifts       Shift         @relation(fields: [shift_id], references: [id], onUpdate: NoAction)
+
+  @@index([shift_id, posting_date], map: "accounting_expense_settlements_shift")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model accounting_supplier_openings {
+  id                                                       String    @id
+  supplier_id                                              String
+  amount                                                   Decimal   @db.Decimal(12, 2)
+  posting_date                                             DateTime  @db.Date
+  reason                                                   String
+  actor_id                                                 String
+  approved_by_id                                           String
+  shift_id                                                 String
+  created_at                                               DateTime  @default(now()) @db.Timestamptz(6)
+  users_accounting_supplier_openings_actor_idTousers       User      @relation("accounting_supplier_openings_actor_idTousers", fields: [actor_id], references: [id], onUpdate: NoAction)
+  users_accounting_supplier_openings_approved_by_idTousers User      @relation("accounting_supplier_openings_approved_by_idTousers", fields: [approved_by_id], references: [id], onUpdate: NoAction)
+  shifts                                                   Shift     @relation(fields: [shift_id], references: [id], onUpdate: NoAction)
+  suppliers                                                suppliers @relation(fields: [supplier_id], references: [id], onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model employee_finance_allocations {
+  id                                                    String                        @id @db.Uuid
+  receipt_id                                            String                        @db.Uuid
+  request_id                                            String                        @unique @db.Uuid
+  kind                                                  String
+  sale_id                                               String?
+  employee_id                                           String?
+  actor_id                                              String
+  shift_id                                              String
+  reversal_of                                           String?                       @unique @db.Uuid
+  amount                                                Decimal                       @db.Decimal(12, 2)
+  reason                                                String
+  created_at                                            DateTime                      @default(now()) @db.Timestamptz(6)
+  users_employee_finance_allocations_actor_idTousers    User                          @relation("employee_finance_allocations_actor_idTousers", fields: [actor_id], references: [id], onUpdate: NoAction)
+  users_employee_finance_allocations_employee_idTousers User?                         @relation("employee_finance_allocations_employee_idTousers", fields: [employee_id], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  employee_finance_receipts                             employee_finance_receipts     @relation(fields: [receipt_id], references: [id], onUpdate: NoAction)
+  employee_finance_allocations                          employee_finance_allocations? @relation("employee_finance_allocationsToemployee_finance_allocations", fields: [reversal_of], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  other_employee_finance_allocations                    employee_finance_allocations? @relation("employee_finance_allocationsToemployee_finance_allocations")
+  sales                                                 Sale?                         @relation(fields: [sale_id], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  shifts                                                Shift                         @relation(fields: [shift_id], references: [id], onUpdate: NoAction)
+  employee_settlement_links                             employee_settlement_links?
+
+  @@index([employee_id], map: "employee_finance_allocations_employee")
+  @@index([receipt_id], map: "employee_finance_allocations_receipt")
+  @@index([sale_id], map: "employee_finance_allocations_sale")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model employee_finance_events {
+  id          String   @id @db.Uuid
+  request_id  String   @unique @db.Uuid
+  actor_id    String
+  action      String
+  target_type String
+  target_id   String   @db.Uuid
+  reason      String
+  metadata    Json     @default("{}")
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+  users       User     @relation(fields: [actor_id], references: [id], onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model employee_finance_receipts {
+  id                           String                         @id @db.Uuid
+  request_id                   String                         @unique @db.Uuid
+  actor_id                     String
+  original_sale_id             String
+  shift_id                     String?
+  method                       String
+  reference                    String?
+  submitted_reference          String?
+  amount                       Decimal                        @db.Decimal(12, 2)
+  fingerprint                  String
+  created_at                   DateTime                       @default(now()) @db.Timestamptz(6)
+  employee_finance_allocations employee_finance_allocations[]
+  users                        User                           @relation(fields: [actor_id], references: [id], onUpdate: NoAction)
+  sales                        Sale                           @relation(fields: [original_sale_id], references: [id], onUpdate: NoAction)
+  shifts                       Shift?                         @relation(fields: [shift_id], references: [id], onDelete: Restrict, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model employee_payroll_drafts {
+  id                                               String                        @id @db.Uuid
+  request_id                                       String                        @unique @db.Uuid
+  employee_id                                      String
+  actor_id                                         String
+  payroll_year                                     Int
+  payroll_month                                    Int
+  calendar_days                                    Int
+  missed_days                                      Decimal                       @db.Decimal(8, 4)
+  payable_days                                     Decimal                       @db.Decimal(8, 4)
+  monthly_basic                                    Decimal                       @db.Decimal(12, 2)
+  adjusted_basic                                   Decimal                       @db.Decimal(12, 2)
+  net_before_statutory                             Decimal                       @db.Decimal(12, 2)
+  fingerprint                                      String
+  snapshot                                         Json
+  reason                                           String
+  created_at                                       DateTime                      @default(now()) @db.Timestamptz(6)
+  accounting_adjustments                           accounting_adjustments[]
+  employee_advance_recoveries                      employee_advance_recoveries[]
+  employee_finance_cash                            employee_finance_cash[]
+  users_employee_payroll_drafts_actor_idTousers    User                          @relation("employee_payroll_drafts_actor_idTousers", fields: [actor_id], references: [id], onUpdate: NoAction)
+  users_employee_payroll_drafts_employee_idTousers User                          @relation("employee_payroll_drafts_employee_idTousers", fields: [employee_id], references: [id], onUpdate: NoAction)
+  employee_payroll_events                          employee_payroll_events[]
+  employee_payroll_periods                         employee_payroll_periods?
+  employee_payroll_postings                        employee_payroll_postings[]
+  employee_payroll_sources                         employee_payroll_sources[]
+  employee_settlement_links                        employee_settlement_links[]
+
+  @@index([employee_id, payroll_year, payroll_month], map: "employee_payroll_drafts_employee_period")
+  eligible_days Decimal? @db.Decimal(8, 4)
+  salary_segments Json?
+  manual_basic_adjustment Decimal @default(0) @db.Decimal(12, 2)
+  attendance_snapshot Json?
+  refs_payroll_draft_revisions_original_draft_id payroll_draft_revisions? @relation("payroll_draft_revisions_original_draft_id_relation")
+  refs_payroll_draft_revisions_replacement_draft_id payroll_draft_revisions? @relation("payroll_draft_revisions_replacement_draft_id_relation")
+  refs_payroll_corrections_root_draft_id payroll_corrections[] @relation("payroll_corrections_root_draft_id_relation")
+  refs_payroll_corrections_basis_draft_id payroll_corrections[] @relation("payroll_corrections_basis_draft_id_relation")
+  refs_payroll_corrections_replacement_draft_id payroll_corrections? @relation("payroll_corrections_replacement_draft_id_relation")
+  refs_payroll_correction_applications_root_draft_id payroll_correction_applications[] @relation("payroll_correction_applications_root_draft_id_relation")
+  refs_payroll_correction_applications_effective_draft_id payroll_correction_applications[] @relation("payroll_correction_applications_effective_draft_id_relation")
+  refs_payroll_overpayment_claims_root_draft_id payroll_overpayment_claims[] @relation("payroll_overpayment_claims_root_draft_id_relation")
+  refs_payroll_overpayment_recoveries_recovery_draft_id payroll_overpayment_recoveries[] @relation("payroll_overpayment_recoveries_recovery_draft_id_relation")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model employee_advance_recoveries {
+  id                       String                   @id @db.Uuid
+  advance_id               String                   @db.Uuid
+  draft_id                 String                   @db.Uuid
+  actor_id                 String
+  amount                   Decimal                  @db.Decimal(12, 2)
+  created_at               DateTime                 @default(now()) @db.Timestamptz(6)
+  users                    User                     @relation(fields: [actor_id], references: [id], onUpdate: NoAction)
+  employee_salary_advances employee_salary_advances @relation(fields: [advance_id], references: [id], onUpdate: NoAction)
+  employee_payroll_drafts  employee_payroll_drafts  @relation(fields: [draft_id], references: [id], onUpdate: NoAction)
+
+
+  payroll_correction_id String? @db.Uuid
+  refs_payroll_advance_reversals_recovery_id payroll_advance_reversals[] @relation("payroll_advance_reversals_recovery_id_relation")
+  related_payroll_correction_id payroll_correction_applications? @relation("employee_advance_recoveries_payroll_correction_id_relation", fields: [payroll_correction_id], references: [correction_id], onDelete: Restrict, onUpdate: NoAction, map: "employee_advance_recoveries_payroll_correction_id_fkey")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model employee_finance_cash {
+  id                                             String                    @id @db.Uuid
+  request_id                                     String                    @unique @db.Uuid
+  employee_id                                    String
+  actor_id                                       String
+  shift_id                                       String
+  draft_id                                       String? @db.Uuid
+  advance_id                                     String?                   @unique @db.Uuid
+  accounting_adjustment_id                       String                    @unique
+  method                                         String
+  reference                                      String?
+  amount                                         Decimal                   @db.Decimal(12, 2)
+  reason                                         String
+  created_at                                     DateTime                  @default(now()) @db.Timestamptz(6)
+  accounting_adjustments                         accounting_adjustments    @relation(fields: [accounting_adjustment_id], references: [id], onUpdate: NoAction)
+  users_employee_finance_cash_actor_idTousers    User                      @relation("employee_finance_cash_actor_idTousers", fields: [actor_id], references: [id], onUpdate: NoAction)
+  employee_salary_advances                       employee_salary_advances? @relation(fields: [advance_id], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  employee_payroll_drafts                        employee_payroll_drafts?  @relation(fields: [draft_id], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  users_employee_finance_cash_employee_idTousers User                      @relation("employee_finance_cash_employee_idTousers", fields: [employee_id], references: [id], onUpdate: NoAction)
+  shifts                                         Shift                     @relation(fields: [shift_id], references: [id], onUpdate: NoAction)
+  overpayment_recovery_id String? @unique @db.Uuid
+  direction String @default("OUT")
+  payroll_correction_id String? @db.Uuid
+  related_payroll_correction_id payroll_correction_applications? @relation("employee_finance_cash_payroll_correction_id_relation", fields: [payroll_correction_id], references: [correction_id], onDelete: Restrict, onUpdate: NoAction, map: "employee_finance_cash_payroll_correction_id_fkey")
+  related_overpayment_recovery_id payroll_overpayment_recoveries? @relation("employee_finance_cash_overpayment_recovery_id_relation", fields: [overpayment_recovery_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "employee_finance_cash_overpayment_recovery_id_fkey")
+  @@index([draft_id], map: "employee_finance_cash_review_lookup")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model employee_finance_operations {
+  id          String   @id @db.Uuid
+  actor_id    String
+  action      String
+  fingerprint String
+  result      Json
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+  users       User     @relation(fields: [actor_id], references: [id], onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model employee_payroll_events {
+  id                      String                  @id @db.Uuid
+  request_id              String                  @unique @db.Uuid
+  draft_id                String                  @db.Uuid
+  actor_id                String
+  sequence                Int
+  status                  String
+  reason                  String
+  metadata                Json                    @default("{}")
+  created_at              DateTime                @default(now()) @db.Timestamptz(6)
+  users                   User                    @relation(fields: [actor_id], references: [id], onUpdate: NoAction)
+  employee_payroll_drafts employee_payroll_drafts @relation(fields: [draft_id], references: [id], onUpdate: NoAction)
+
+  @@unique([draft_id, sequence])
+
+}
+
+model employee_payroll_periods {
+  employee_id             String
+  payroll_year            Int
+  payroll_month           Int
+  draft_id                String                  @unique @db.Uuid
+  employee_payroll_drafts employee_payroll_drafts @relation(fields: [draft_id], references: [id], onUpdate: NoAction)
+  users                   User                    @relation(fields: [employee_id], references: [id], onUpdate: NoAction)
+
+  @@id([employee_id, payroll_year, payroll_month])
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model employee_payroll_postings {
+  id                       String                  @id @db.Uuid
+  draft_id                 String                  @db.Uuid
+  accounting_adjustment_id String                  @unique
+  kind                     String
+  created_at               DateTime                @default(now()) @db.Timestamptz(6)
+  accounting_adjustments   accounting_adjustments  @relation(fields: [accounting_adjustment_id], references: [id], onUpdate: NoAction)
+  employee_payroll_drafts  employee_payroll_drafts @relation(fields: [draft_id], references: [id], onUpdate: NoAction)
+
+
+  payroll_correction_id String? @db.Uuid
+  related_payroll_correction_id payroll_correction_applications? @relation("employee_payroll_postings_payroll_correction_id_relation", fields: [payroll_correction_id], references: [correction_id], onDelete: Restrict, onUpdate: NoAction, map: "employee_payroll_postings_payroll_correction_id_fkey")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model employee_payroll_sources {
+  id                      String                  @id @db.Uuid
+  draft_id                String                  @db.Uuid
+  source_key              String
+  amount                  Decimal                 @db.Decimal(12, 2)
+  kind                    String
+  created_at              DateTime                @default(now()) @db.Timestamptz(6)
+  employee_payroll_drafts employee_payroll_drafts @relation(fields: [draft_id], references: [id], onUpdate: NoAction)
+  payroll_correction_id String? @db.Uuid
+  refs_payroll_source_releases_source_id payroll_source_releases[] @relation("payroll_source_releases_source_id_relation")
+  related_payroll_correction_id payroll_correction_applications? @relation("employee_payroll_sources_payroll_correction_id_relation", fields: [payroll_correction_id], references: [correction_id], onDelete: Restrict, onUpdate: NoAction, map: "employee_payroll_sources_payroll_correction_id_fkey")
+  @@index([source_key], map: "payroll_sources_key")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model employee_salary_advances {
+  id                                                String                        @id @db.Uuid
+  request_id                                        String                        @unique @db.Uuid
+  employee_id                                       String
+  actor_id                                          String
+  shift_id                                          String
+  amount                                            Decimal                       @db.Decimal(12, 2)
+  reason                                            String
+  created_at                                        DateTime                      @default(now()) @db.Timestamptz(6)
+  accounting_adjustments                            accounting_adjustments?
+  employee_advance_recoveries                       employee_advance_recoveries[]
+  employee_finance_cash                             employee_finance_cash?
+  users_employee_salary_advances_actor_idTousers    User                          @relation("employee_salary_advances_actor_idTousers", fields: [actor_id], references: [id], onUpdate: NoAction)
+  users_employee_salary_advances_employee_idTousers User                          @relation("employee_salary_advances_employee_idTousers", fields: [employee_id], references: [id], onUpdate: NoAction)
+  shifts                                            Shift                         @relation(fields: [shift_id], references: [id], onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model employee_settlement_links {
+  adjustment_id                   String                        @id
+  allocation_id                   String?                       @unique @db.Uuid
+  draft_id                        String?                       @db.Uuid
+  sale_id                         String
+  reversal_of                     String?                       @unique
+  financial_adjustments           FinancialAdjustment           @relation(fields: [adjustment_id], references: [id], onUpdate: NoAction)
+  employee_finance_allocations    employee_finance_allocations? @relation(fields: [allocation_id], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  employee_payroll_drafts         employee_payroll_drafts?      @relation(fields: [draft_id], references: [id], onDelete: Restrict, onUpdate: NoAction)
+  employee_settlement_links       employee_settlement_links?    @relation("employee_settlement_linksToemployee_settlement_links", fields: [reversal_of], references: [adjustment_id], onDelete: Restrict, onUpdate: NoAction)
+  other_employee_settlement_links employee_settlement_links?    @relation("employee_settlement_linksToemployee_settlement_links")
+  sales                           Sale                          @relation(fields: [sale_id], references: [id], onUpdate: NoAction)
+  payroll_correction_id String? @db.Uuid
+  related_payroll_correction_id payroll_correction_applications? @relation("employee_settlement_links_payroll_correction_id_relation", fields: [payroll_correction_id], references: [correction_id], onDelete: Restrict, onUpdate: NoAction, map: "employee_settlement_links_payroll_correction_id_fkey")
+}
+
+enum Role {
+  WAITER
+  CASHIER
+  MANAGER
+}
+
+enum ProductType {
+  simple
+  composite
+}
+
+enum PaymentMethod {
+  CASH
+  MPESA
+}
+
+enum SaleStatus {
+  UNPAID
+  PARTIAL
+  PAID
+  CANCELLED
+  MERGED
+}
+
+enum ShiftStatus {
+  OPEN
+  CLOSED
+}
+
+enum StockMovementType {
+  IN
+  OUT
+  ADJUSTMENT
+  SALE
+  COUNT
+  CORRECTION
+}
+
+enum StockCountStatus {
+  DRAFT
+  COMPLETED
+  CANCELLED
+}
+
+enum DocketStatus {
+  PENDING
+  PREPARING
+  READY
+  SERVED
+  CANCELLED
+}
+
+// Proposed only. Not the active schema and not yet installed.
+model EmployeeSalaryProfile {
+ id String @id @db.Uuid
+ employeeId String @map("employee_id")
+ revision Int
+ effectiveDate DateTime @db.Date @map("effective_date")
+ employmentStart DateTime @db.Date @map("employment_start")
+ employmentEnd DateTime? @db.Date @map("employment_end")
+ employmentStatus String @map("employment_status")
+ monthlyBasic Decimal @db.Decimal(12,2) @map("monthly_basic")
+ commissionEligible Boolean @map("commission_eligible")
+ commissionRate Decimal @db.Decimal(5,2) @map("commission_rate")
+ actorId String @map("actor_id")
+ reason String
+ createdAt DateTime @default(now()) @db.Timestamptz(6) @map("created_at")
+ employee User @relation("SalaryEmployee",fields:[employeeId],references:[id],onDelete:Restrict,onUpdate:NoAction)
+ actor User @relation("SalaryActor",fields:[actorId],references:[id],onDelete:Restrict,onUpdate:NoAction)
+ @@unique([employeeId,revision],map:"employee_salary_profiles_employee_id_revision_key")
+ @@index([employeeId,effectiveDate(sort:Desc),revision(sort:Desc)],map:"employee_salary_profiles_asof_idx")
+ @@map("employee_salary_profiles")
+}
+model CustomRole {
+ id String @id @db.Uuid
+ name String
+ baseRole Role @map("base_role")
+ isActive Boolean @default(true) @map("is_active")
+ version Int @default(1)
+ createdById String @map("created_by_id")
+ createdAt DateTime @default(now()) @db.Timestamptz(6) @map("created_at")
+ updatedAt DateTime @default(now()) @db.Timestamptz(6) @map("updated_at")
+ createdBy User @relation(fields:[createdById],references:[id],onDelete:Restrict,onUpdate:NoAction)
+ permissions CustomRolePermission[]
+ assignments UserCustomRole[]
+ @@map("custom_roles")
+}
+model CustomRolePermission {
+ roleId String @db.Uuid @map("role_id")
+ permission String
+ enabled Boolean @default(false)
+ role CustomRole @relation(fields:[roleId],references:[id],onDelete:Restrict,onUpdate:NoAction)
+ @@id([roleId,permission])
+ @@map("custom_role_permissions")
+}
+model UserCustomRole {
+ userId String @id @map("user_id")
+ roleId String? @db.Uuid @map("role_id")
+ version Int @default(1)
+ assignedById String @map("assigned_by_id")
+ updatedAt DateTime @default(now()) @db.Timestamptz(6) @map("updated_at")
+ user User @relation("CustomRoleMember",fields:[userId],references:[id],onDelete:Restrict,onUpdate:NoAction)
+ assignedBy User @relation("CustomRoleAssigner",fields:[assignedById],references:[id],onDelete:Restrict,onUpdate:NoAction)
+ role CustomRole? @relation(fields:[roleId],references:[id],onDelete:Restrict,onUpdate:NoAction)
+ @@index([roleId],map:"user_custom_roles_role_idx")
+ @@map("user_custom_roles")
+}
+
+// REVIEW ONLY: SQL preserves CHECKs, immutable/deferred guards and partial indexes.
+model payroll_draft_revisions {
+  id String @id @db.Uuid
+  request_id String @unique @db.Uuid
+  original_draft_id String @unique @db.Uuid
+  replacement_draft_id String @unique @db.Uuid
+  kind String 
+  actor_id String 
+  reason String 
+  created_at DateTime @db.Timestamptz(6) @default(now())
+  related_original_draft_id employee_payroll_drafts @relation("payroll_draft_revisions_original_draft_id_relation", fields: [original_draft_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "payroll_draft_revisions_original_draft_id_fk")
+  related_replacement_draft_id employee_payroll_drafts @relation("payroll_draft_revisions_replacement_draft_id_relation", fields: [replacement_draft_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "payroll_draft_revisions_replacement_draft_id_fk")
+  related_actor_id User @relation("payroll_draft_revisions_actor_id_relation", fields: [actor_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "payroll_draft_revisions_actor_id_fk")
+}
+
+// REVIEW ONLY: SQL preserves CHECKs, immutable/deferred guards and partial indexes.
+model payroll_corrections {
+  id String @id @db.Uuid
+  request_id String @unique @db.Uuid
+  root_draft_id String @db.Uuid
+  basis_draft_id String @db.Uuid
+  replacement_draft_id String? @unique @db.Uuid
+  expected_version Int 
+  mode String 
+  actor_id String 
+  accounting_date DateTime @db.Date
+  preview_fingerprint String 
+  snapshot Json 
+  reason String 
+  created_at DateTime @db.Timestamptz(6) @default(now())
+  related_root_draft_id employee_payroll_drafts @relation("payroll_corrections_root_draft_id_relation", fields: [root_draft_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "payroll_corrections_root_draft_id_fk")
+  related_basis_draft_id employee_payroll_drafts @relation("payroll_corrections_basis_draft_id_relation", fields: [basis_draft_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "payroll_corrections_basis_draft_id_fk")
+  related_replacement_draft_id employee_payroll_drafts? @relation("payroll_corrections_replacement_draft_id_relation", fields: [replacement_draft_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "payroll_corrections_replacement_draft_id_fk")
+  related_actor_id User @relation("payroll_corrections_actor_id_relation", fields: [actor_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "payroll_corrections_actor_id_fk")
+  refs_payroll_correction_events_correction_id payroll_correction_events[] @relation("payroll_correction_events_correction_id_relation")
+  refs_payroll_correction_applications_correction_id payroll_correction_applications? @relation("payroll_correction_applications_correction_id_relation")
+  @@index([root_draft_id, created_at, id], map: "payroll_corrections_review_lookup")
+}
+
+// REVIEW ONLY: SQL preserves CHECKs, immutable/deferred guards and partial indexes.
+model payroll_correction_events {
+  id String @id @db.Uuid
+  request_id String @unique @db.Uuid
+  correction_id String @db.Uuid
+  sequence Int 
+  status String 
+  actor_id String 
+  reason String 
+  preview_fingerprint String 
+  created_at DateTime @db.Timestamptz(6) @default(now())
+  related_correction_id payroll_corrections @relation("payroll_correction_events_correction_id_relation", fields: [correction_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "payroll_correction_events_correction_id_fk")
+  related_actor_id User @relation("payroll_correction_events_actor_id_relation", fields: [actor_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "payroll_correction_events_actor_id_fk")
+  @@unique([correction_id, sequence])
+  @@unique([correction_id, status])
+  @@index([correction_id, sequence], map: "payroll_correction_events_review_lookup")
+}
+
+// REVIEW ONLY: SQL preserves CHECKs, immutable/deferred guards and partial indexes.
+model payroll_correction_applications {
+  correction_id String @id @db.Uuid
+  root_draft_id String @db.Uuid
+  effective_draft_id String @db.Uuid
+  version Int 
+  actor_id String 
+  created_at DateTime @db.Timestamptz(6) @default(now())
+  related_correction_id payroll_corrections @relation("payroll_correction_applications_correction_id_relation", fields: [correction_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "payroll_correction_applications_correction_id_fk")
+  related_root_draft_id employee_payroll_drafts @relation("payroll_correction_applications_root_draft_id_relation", fields: [root_draft_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "payroll_correction_applications_root_draft_id_fk")
+  related_effective_draft_id employee_payroll_drafts @relation("payroll_correction_applications_effective_draft_id_relation", fields: [effective_draft_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "payroll_correction_applications_effective_draft_id_fk")
+  related_actor_id User @relation("payroll_correction_applications_actor_id_relation", fields: [actor_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "payroll_correction_applications_actor_id_fk")
+  refs_payroll_source_releases_correction_id payroll_source_releases[] @relation("payroll_source_releases_correction_id_relation")
+  refs_payroll_advance_reversals_correction_id payroll_advance_reversals[] @relation("payroll_advance_reversals_correction_id_relation")
+  refs_payroll_overpayment_claims_correction_id payroll_overpayment_claims? @relation("payroll_overpayment_claims_correction_id_relation")
+  refs_accounting_adjustments_payroll_correction_id accounting_adjustments[] @relation("accounting_adjustments_payroll_correction_id_relation")
+  refs_employee_payroll_postings_payroll_correction_id employee_payroll_postings[] @relation("employee_payroll_postings_payroll_correction_id_relation")
+  refs_employee_payroll_sources_payroll_correction_id employee_payroll_sources[] @relation("employee_payroll_sources_payroll_correction_id_relation")
+  refs_employee_advance_recoveries_payroll_correction_id employee_advance_recoveries[] @relation("employee_advance_recoveries_payroll_correction_id_relation")
+  refs_employee_settlement_links_payroll_correction_id employee_settlement_links[] @relation("employee_settlement_links_payroll_correction_id_relation")
+  refs_employee_finance_cash_payroll_correction_id employee_finance_cash[] @relation("employee_finance_cash_payroll_correction_id_relation")
+  @@unique([root_draft_id, version])
+  claim_adjustments payroll_overpayment_claim_adjustments[] @relation("claim_adjustment_correction")
+}
+
+// REVIEW ONLY: SQL preserves CHECKs, immutable/deferred guards and partial indexes.
+model payroll_source_releases {
+  id String @id @db.Uuid
+  source_id String @db.Uuid
+  correction_id String @db.Uuid
+  amount Decimal @db.Decimal(12, 2)
+  created_at DateTime @db.Timestamptz(6) @default(now())
+  related_source_id employee_payroll_sources @relation("payroll_source_releases_source_id_relation", fields: [source_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "payroll_source_releases_source_id_fk")
+  related_correction_id payroll_correction_applications @relation("payroll_source_releases_correction_id_relation", fields: [correction_id], references: [correction_id], onDelete: NoAction, onUpdate: NoAction, map: "payroll_source_releases_applied_fk")
+  @@unique([source_id, correction_id])
+  @@index([source_id], map: "payroll_source_releases_review_lookup")
+}
+
+// REVIEW ONLY: SQL preserves CHECKs, immutable/deferred guards and partial indexes.
+model payroll_advance_reversals {
+  id String @id @db.Uuid
+  recovery_id String @db.Uuid
+  correction_id String @db.Uuid
+  accounting_adjustment_id String 
+  amount Decimal @db.Decimal(12, 2)
+  created_at DateTime @db.Timestamptz(6) @default(now())
+  related_recovery_id employee_advance_recoveries @relation("payroll_advance_reversals_recovery_id_relation", fields: [recovery_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "payroll_advance_reversals_recovery_id_fk")
+  related_correction_id payroll_correction_applications @relation("payroll_advance_reversals_correction_id_relation", fields: [correction_id], references: [correction_id], onDelete: NoAction, onUpdate: NoAction, map: "payroll_advance_reversals_applied_fk")
+  related_accounting_adjustment_id accounting_adjustments @relation("payroll_advance_reversals_accounting_adjustment_id_relation", fields: [accounting_adjustment_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "payroll_advance_reversals_accounting_adjustment_id_fk")
+  @@unique([recovery_id, correction_id])
+  @@index([recovery_id], map: "payroll_advance_reversals_review_lookup")
+}
+
+// REVIEW ONLY: SQL preserves CHECKs, immutable/deferred guards and partial indexes.
+model payroll_overpayment_claims {
+  id String @id @db.Uuid
+  correction_id String @unique @db.Uuid
+  root_draft_id String @db.Uuid
+  employee_id String 
+  accounting_adjustment_id String @unique
+  amount Decimal @db.Decimal(12, 2)
+  created_at DateTime @db.Timestamptz(6) @default(now())
+  related_correction_id payroll_correction_applications @relation("payroll_overpayment_claims_correction_id_relation", fields: [correction_id], references: [correction_id], onDelete: NoAction, onUpdate: NoAction, map: "payroll_overpayment_claims_applied_fk")
+  related_root_draft_id employee_payroll_drafts @relation("payroll_overpayment_claims_root_draft_id_relation", fields: [root_draft_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "payroll_overpayment_claims_root_draft_id_fk")
+  related_employee_id User @relation("payroll_overpayment_claims_employee_id_relation", fields: [employee_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "payroll_overpayment_claims_employee_id_fk")
+  related_accounting_adjustment_id accounting_adjustments @relation("payroll_overpayment_claims_accounting_adjustment_id_relation", fields: [accounting_adjustment_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "payroll_overpayment_claims_accounting_adjustment_id_fk")
+  refs_payroll_overpayment_recoveries_claim_id payroll_overpayment_recoveries[] @relation("payroll_overpayment_recoveries_claim_id_relation")
+  claim_adjustments payroll_overpayment_claim_adjustments[] @relation("claim_adjustment_claim")
+}
+
+// REVIEW ONLY: SQL preserves CHECKs, immutable/deferred guards and partial indexes.
+model payroll_overpayment_recoveries {
+  id String @id @db.Uuid
+  request_id String @unique @db.Uuid
+  claim_id String @db.Uuid
+  accounting_adjustment_id String @unique
+  amount Decimal @db.Decimal(12, 2)
+  method String 
+  recovery_draft_id String? @db.Uuid
+  actor_id String 
+  approved_by_id String 
+  authorization_reference String 
+  reason String 
+  created_at DateTime @db.Timestamptz(6) @default(now())
+  related_claim_id payroll_overpayment_claims @relation("payroll_overpayment_recoveries_claim_id_relation", fields: [claim_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "payroll_overpayment_recoveries_claim_id_fk")
+  related_accounting_adjustment_id accounting_adjustments @relation("payroll_overpayment_recoveries_accounting_adjustment_id_relation", fields: [accounting_adjustment_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "payroll_overpayment_recoveries_accounting_adjustment_id_fk")
+  related_recovery_draft_id employee_payroll_drafts? @relation("payroll_overpayment_recoveries_recovery_draft_id_relation", fields: [recovery_draft_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "payroll_overpayment_recoveries_recovery_draft_id_fk")
+  related_actor_id User @relation("payroll_overpayment_recoveries_actor_id_relation", fields: [actor_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "payroll_overpayment_recoveries_actor_id_fk")
+  related_approved_by_id User @relation("payroll_overpayment_recoveries_approved_by_id_relation", fields: [approved_by_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "payroll_overpayment_recoveries_approved_by_id_fk")
+  refs_employee_finance_cash_overpayment_recovery_id employee_finance_cash? @relation("employee_finance_cash_overpayment_recovery_id_relation")
+  @@index([claim_id], map: "payroll_overpayment_recoveries_review_lookup")
+}
+
+// REVIEW ONLY: SQL preserves CHECKs, immutable/deferred guards and partial indexes.
+model accounting_closed_periods {
+  period_start DateTime @id @db.Date
+  request_id String @unique @db.Uuid
+  actor_id String 
+  approved_by_id String 
+  reason String 
+  created_at DateTime @db.Timestamptz(6) @default(now())
+  related_actor_id User @relation("accounting_closed_periods_actor_id_relation", fields: [actor_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "accounting_closed_periods_actor_id_fk")
+  related_approved_by_id User @relation("accounting_closed_periods_approved_by_id_relation", fields: [approved_by_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "accounting_closed_periods_approved_by_id_fk")
+}
+
+model payroll_overpayment_claim_adjustments {
+ id String @id @db.Uuid
+ claim_id String @db.Uuid
+ correction_id String @db.Uuid
+ accounting_adjustment_id String @unique(map: "payroll_overpayment_claim_adjustme_accounting_adjustment_id_key")
+ amount Decimal @db.Decimal(12, 2)
+ created_at DateTime @default(now()) @db.Timestamptz(6)
+ claim payroll_overpayment_claims @relation("claim_adjustment_claim", fields: [claim_id], references: [id], onDelete: Restrict, onUpdate: NoAction)
+ correction payroll_correction_applications @relation("claim_adjustment_correction", fields: [correction_id], references: [correction_id], onDelete: Restrict, onUpdate: NoAction)
+ journal accounting_adjustments @relation("claim_adjustment_journal", fields: [accounting_adjustment_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "payroll_overpayment_claim_adjustm_accounting_adjustment_id_fkey")
+ @@unique([claim_id, correction_id], map: "payroll_overpayment_claim_adjustment_claim_id_correction_id_key")
+ @@index([claim_id], map: "payroll_claim_adjustments_claim")
+}
+
+
+/// Proposed successor to TEST29 only. SQL contains additional check/trigger invariants.
+model SupplierInvoiceReceiving {
+ purchaseId String @id @map("purchase_id")
+ createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+ purchase Purchase @relation(fields: [purchaseId], references: [id], onDelete: Restrict, onUpdate: NoAction)
+ receipts SupplierGoodsReceipt[]
+ @@map("supplier_invoice_receiving")
+}
+model SupplierGoodsReceipt {
+ creationXid Unsupported("xid8") @default(dbgenerated("pg_current_xact_id()")) @map("creation_xid")
+ id String @id @db.Uuid
+ purchaseId String @map("purchase_id")
+ requestHash String @map("request_hash")
+ reversesId String? @unique @map("reverses_id") @db.Uuid
+ actorId String @map("actor_id")
+ shiftId String @map("shift_id")
+ postingDate DateTime @map("posting_date") @db.Date
+ reason String
+ createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+ invoice SupplierInvoiceReceiving @relation(fields: [purchaseId], references: [purchaseId], onDelete: Restrict, onUpdate: NoAction)
+ original SupplierGoodsReceipt? @relation("GoodsReversal", fields: [reversesId], references: [id], onDelete: Restrict, onUpdate: NoAction)
+ reversal SupplierGoodsReceipt? @relation("GoodsReversal")
+ actor User @relation(fields: [actorId], references: [id], onDelete: Restrict, onUpdate: NoAction)
+ shift Shift @relation(fields: [shiftId], references: [id], onDelete: Restrict, onUpdate: NoAction)
+ lines SupplierGoodsReceiptLine[]
+ @@index([purchaseId,createdAt,id], map: "supplier_goods_receipts_invoice")
+ @@map("supplier_goods_receipts")
+}
+model SupplierGoodsReceiptLine {
+ id String @id @db.Uuid
+ receiptId String @map("receipt_id") @db.Uuid
+ purchaseItemId String @map("purchase_item_id")
+ quantity Decimal @db.Decimal(12,6)
+ amount Decimal @db.Decimal(12,2)
+ movementId String @unique @map("movement_id")
+ receipt SupplierGoodsReceipt @relation(fields: [receiptId], references: [id], onDelete: Restrict, onUpdate: NoAction)
+ item PurchaseItem @relation(fields: [purchaseItemId], references: [id], onDelete: Restrict, onUpdate: NoAction)
+ movement StockMovement @relation(fields: [movementId], references: [id], onDelete: Restrict, onUpdate: NoAction)
+ @@unique([receiptId,purchaseItemId])
+ @@index([purchaseItemId,receiptId], map: "supplier_goods_receipt_lines_item")
+ @@map("supplier_goods_receipt_lines")
+}
+model BusinessDayPolicy {
+ id String @id @db.Uuid
+ version Int @unique
+ startMinute Int @map("start_minute")
+ effectiveDate DateTime @unique @map("effective_date") @db.Date
+ timezone String @default("Africa/Nairobi")
+ previousId String? @unique @map("previous_id") @db.Uuid
+ actorId String @map("actor_id")
+ reason String
+ createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+ previous BusinessDayPolicy? @relation("PolicyVersion", fields: [previousId], references: [id], onDelete: Restrict, onUpdate: NoAction)
+ following BusinessDayPolicy? @relation("PolicyVersion")
+ actor User @relation(fields: [actorId], references: [id], onDelete: Restrict, onUpdate: NoAction)
+ periods BusinessDayPeriod[]
+ @@map("business_day_policies")
+}
+model BusinessDayPeriod {
+ id String @id @db.Uuid
+ policyId String @map("policy_id") @db.Uuid
+ businessDate DateTime @unique @map("business_date") @db.Date
+ startsAt DateTime @unique @map("starts_at") @db.Timestamptz(6)
+ endsAt DateTime @unique @map("ends_at") @db.Timestamptz(6)
+ policy BusinessDayPolicy @relation(fields: [policyId], references: [id], onDelete: Restrict, onUpdate: NoAction)
+ shifts Shift[]
+ @@map("business_day_periods")
+}
